@@ -3,1417 +3,607 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Director Editorial — Escritores Hispanos</title>
+<title>Escritores Hispanos — Tu manuscrito, de la idea a Amazon KDP</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#16302e;
-    --ink-2:#1f403d;
     --verde:#1c4d4d;
+    --verde-osc:#123534;
     --oro:#d9ae57;
     --oro-claro:#e8c684;
     --vino:#7a3520;
     --papel:#e8e4ee;
     --papel-claro:#ffffff;
-    --linea:#ded8e6;
-    --texto:#1a1a1a;
-    --teal-texto:#1c7d7d;
+    --linea: rgba(26,26,26,0.12);
   }
   *{box-sizing:border-box; margin:0; padding:0;}
-  body{ font-family:'Inter',sans-serif; background:var(--papel); color:var(--texto); height:100vh; overflow:hidden; }
-  .layout{ display:grid; grid-template-columns:240px 1fr 320px; grid-template-rows:100vh; height:100vh; }
-
-  /* ===== SIDEBAR ===== */
-  .sidebar{ background:var(--ink); color:#c9d3cb; display:flex; flex-direction:column; padding:22px 16px; }
-  .logo{ font-family:'Poppins',sans-serif; font-weight:700; font-size:1.15rem; color:var(--papel-claro); margin-bottom:4px; }
-  .logo span{ color:var(--oro-claro); }
-  .rol{ font-size:0.72rem; color:#8fa094; margin-bottom:26px; }
-  .btn-nuevo{
-    background:var(--oro); color:#20140a; border:none; border-radius:26px; padding:12px; font-weight:700;
-    font-size:0.85rem; cursor:pointer; margin-bottom:22px; font-family:'Inter',sans-serif;
+  body{
+    background:var(--papel);
+    color:var(--ink);
+    font-family:'Lora', serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
   }
-  .btn-nuevo:hover{ background:var(--oro-claro); }
-  .nav-item{
-    display:flex; align-items:center; gap:10px; padding:11px 10px; border-radius:6px; font-size:0.85rem;
-    cursor:pointer; color:#c9d3cb; opacity:0.85; transition:background .15s;
+  h1,h2,h3,.display{ font-family:'Poppins', sans-serif; font-weight:600; letter-spacing:-0.01em; }
+  .u{ font-family:'Inter', sans-serif; }
+  a{ color:inherit; }
+  img{max-width:100%;}
+
+  /* ===== NAV ===== */
+  nav{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:22px 6vw; position:sticky; top:0; z-index:50;
+    background:rgba(239,231,211,0.9); backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--linea);
   }
-  .nav-item:hover{ background:var(--ink-2); opacity:1; }
-  .nav-item.activo{ background:var(--ink-2); opacity:1; color:var(--papel-claro); }
-  .nav-icon{ width:16px; text-align:center; opacity:0.8; }
-  .sidebar-foot{ margin-top:auto; font-size:0.68rem; color:#5d6d63; line-height:1.5; }
+  .logo{ font-family:'Poppins',sans-serif; font-weight:700; font-size:1.3rem; color:var(--verde); }
+  .logo span{ color:var(--oro); }
+  .nav-links{ display:flex; gap:32px; font-family:'Inter',sans-serif; font-size:0.92rem; font-weight:500; }
+  .nav-links a{ text-decoration:none; opacity:0.75; transition:opacity .2s; }
+  .nav-links a:hover{ opacity:1; }
+  .btn{
+    font-family:'Inter',sans-serif; font-weight:600; font-size:0.9rem;
+    padding:13px 26px; border-radius:30px; border:1.5px solid var(--oro);
+    background:var(--oro); color:#20140a; cursor:pointer;
+    text-decoration:none; display:inline-block; transition:transform .15s, background .2s;
+  }
+  .btn:hover{ background:#c99a45; transform:translateY(-1px); }
+  .btn-ghost{ background:transparent; color:var(--ink); border-color:var(--ink); }
+  .btn-ghost:hover{ background:var(--ink); color:var(--papel-claro); }
+  .btn-oro{ background:var(--oro); border-color:var(--oro); color:#20140a; }
+  .btn-oro:hover{ background:#c99a45; }
 
-  /* ===== USO / PLAN ===== */
-  .uso-box{ margin-top:16px; padding:14px; background:var(--ink-2); border-radius:8px; }
-  .uso-plan{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
-  .uso-plan b{ font-size:0.78rem; color:var(--papel-claro); text-transform:capitalize; }
-  .uso-plan a{ font-size:0.68rem; color:var(--oro-claro); text-decoration:none; font-weight:600; }
-  .uso-plan a:hover{ text-decoration:underline; }
-  .uso-bar{ background:rgba(255,255,255,0.12); border-radius:20px; height:6px; overflow:hidden; }
-  .uso-fill{ background:var(--oro); height:100%; border-radius:20px; transition:width .4s ease; }
-  .uso-fill.limite{ background:var(--vino); }
-  .uso-txt{ font-size:0.68rem; color:#9aa89f; margin-top:5px; }
-  .msg.limite{ align-self:flex-start; background:#fbe9e7; border:1px solid var(--vino); color:var(--vino); }
-  .msg.limite a{ color:var(--vino); font-weight:700; }
+  .anuncio{
+    background:var(--oro-claro); color:var(--vino); text-align:center; padding:9px 20px;
+    font-family:'Inter',sans-serif; font-size:0.78rem; font-weight:700; letter-spacing:0.03em;
+  }
 
-  /* ===== CENTRO: CHAT ===== */
-  .centro{ display:flex; flex-direction:column; border-right:1px solid var(--linea); border-left:1px solid var(--linea); background:#fff; min-height:0; overflow:hidden; }
-  .chat-header{ padding:20px 30px; border-bottom:1px solid var(--linea); }
-  .chat-header h1{ font-family:'Poppins',sans-serif; font-size:1.25rem; font-weight:600; }
-  .chat-header p{ font-size:0.78rem; color:#7a8a80; margin-top:2px; }
-  .chat-scroll{ flex:1; min-height:0; overflow-y:auto; padding:28px 34px; display:flex; flex-direction:column; gap:16px; }
-  .msg{ max-width:75%; padding:13px 16px; border-radius:8px; font-size:0.9rem; line-height:1.6; animation:aparecer .2s ease; white-space:pre-wrap; }
+  /* ===== HERO ===== */
+  .hero{
+    max-width:1180px; margin:0 auto; padding:9vh 6vw 8vh;
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:64px; align-items:center;
+  }
+  .eyebrow{
+    font-family:'Inter',sans-serif; font-size:0.78rem; font-weight:700; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--vino); margin-bottom:18px; display:block;
+  }
+  .hero h1{ font-size:clamp(2.2rem, 4.4vw, 3.4rem); line-height:1.08; margin-bottom:22px; }
+  .cursor{ display:inline-block; width:3px; background:var(--oro); animation:blink 1s step-end infinite; margin-left:2px; }
+  @keyframes blink{ 50%{ opacity:0; } }
+  .hero p.lead{ font-size:1.12rem; color:#3a4a42; max-width:46ch; margin-bottom:32px; }
+  .hero-cta{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:18px; }
+  .hero-note{ font-family:'Inter',sans-serif; font-size:0.82rem; opacity:0.6; }
+
+  /* manuscript mockup (signature element) */
+  .manuscrito{
+    background:var(--papel-claro); border:1px solid var(--linea); border-radius:2px;
+    padding:38px 34px; position:relative; box-shadow:0 24px 60px -30px rgba(28,42,36,0.35);
+    transform:rotate(1.2deg); font-family:'Lora', serif; font-size:0.95rem; color:#2a352f;
+  }
+  .manuscrito::before{
+    content:''; position:absolute; inset:10px; border:1px solid var(--linea); pointer-events:none;
+  }
+  .manuscrito h4{ font-family:'Inter',sans-serif; font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--verde); margin-bottom:16px; font-weight:700;}
+  .tachado{ text-decoration:line-through; text-decoration-color:var(--vino); text-decoration-thickness:2px; color:#8a8478; }
+  .nota-margen{
+    color:var(--vino); font-family:'Inter',sans-serif; font-size:0.72rem; font-weight:600;
+    position:relative; top:-2px;
+  }
+  .circulo{
+    border:2px solid var(--vino); border-radius:50%; padding:0 4px; display:inline-block;
+  }
+  .insercion{ color:var(--oro); font-weight:700; }
+
+  section{ padding:9vh 6vw; }
+  .wrap{ max-width:1180px; margin:0 auto; }
+  .section-head{ max-width:640px; margin-bottom:56px; }
+  .section-head .eyebrow{ color:var(--oro); }
+  .section-head h2{ font-size:clamp(1.7rem,3vw,2.3rem); }
+  .section-head p{ color:#4a564e; margin-top:14px; font-size:1.02rem; }
+
+  /* ===== PIPELINE ===== */
+  .pipeline{ background:var(--verde); color:var(--papel-claro); }
+  .pipeline .section-head p{ color:#c9d3cb; }
+  .pipeline .eyebrow{ color:var(--oro-claro); }
+  .pasos{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:rgba(248,244,232,0.15); border:1px solid rgba(248,244,232,0.15); }
+  .paso{ background:var(--verde); padding:32px 26px; }
+  .paso .num{ font-family:'Poppins',sans-serif; font-size:2.2rem; color:var(--oro-claro); font-weight:500; display:block; margin-bottom:18px; }
+  .paso h3{ font-size:1.15rem; margin-bottom:10px; color:var(--papel-claro); }
+  .paso p{ font-size:0.92rem; color:#c9d3cb; }
+
+  /* ===== APP PREVIEW ===== */
+  .app-frame{
+    border:1px solid var(--linea); border-radius:6px; overflow:hidden; background:#fff;
+    box-shadow:0 30px 70px -35px rgba(28,42,36,0.4);
+  }
+  .app-topbar{
+    background:var(--papel-claro); padding:10px 16px; display:flex; gap:8px; align-items:center;
+    border-bottom:1px solid var(--linea);
+  }
+  .dot{ width:9px; height:9px; border-radius:50%; background:#d8cdb0; }
+  .app-url{ font-family:'Inter',sans-serif; font-size:0.75rem; color:#7a8a80; margin-left:12px; }
+  .app-body{ display:grid; grid-template-columns:1fr 320px; min-height:420px; }
+  .app-editor{ padding:36px 40px; border-right:1px solid var(--linea); }
+  .app-editor h3{ font-family:'Poppins',sans-serif; font-size:1.4rem; margin-bottom:6px;}
+  .app-editor .meta{ font-family:'Inter',sans-serif; font-size:0.75rem; color:#8a8478; margin-bottom:24px; }
+  .app-editor p{ color:#2a352f; margin-bottom:14px; }
+  .app-panel{ background:var(--papel-claro); padding:26px 24px; display:flex; flex-direction:column; gap:16px; }
+  .app-panel h4{ font-family:'Inter',sans-serif; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--verde); font-weight:700; }
+  .chip{
+    font-family:'Inter',sans-serif; font-size:0.8rem; background:#fff; border:1px solid var(--linea);
+    padding:12px 14px; border-radius:4px; color:#3a4a42;
+  }
+  .chip b{ color:var(--vino); font-weight:600; }
+  .ai-bubble{
+    background:var(--verde); color:var(--papel-claro); font-family:'Inter',sans-serif; font-size:0.82rem;
+    padding:14px; border-radius:4px; line-height:1.5;
+  }
+  .app-input{
+    margin-top:auto; display:flex; gap:8px;
+  }
+  .app-input input{
+    flex:1; font-family:'Inter',sans-serif; font-size:0.82rem; padding:10px 12px; border:1px solid var(--linea);
+    border-radius:4px; background:#fff;
+  }
+
+  /* ===== CHAT EN TIEMPO REAL ===== */
+  .chat-window{
+    display:flex; flex-direction:column; height:560px;
+  }
+  .chat-scroll{
+    flex:1; overflow-y:auto; padding:32px 40px; display:flex; flex-direction:column; gap:16px;
+  }
+  .msg{
+    max-width:72%; padding:13px 16px; border-radius:6px; font-family:'Inter',sans-serif;
+    font-size:0.9rem; line-height:1.55; animation:aparecer .25s ease;
+  }
   @keyframes aparecer{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
-  .msg.bot{ align-self:flex-start; background:var(--papel-claro); border:1px solid var(--linea); border-bottom-left-radius:2px; }
-  .msg.user{ align-self:flex-end; background:var(--verde); color:var(--papel-claro); border-bottom-right-radius:2px; }
-  .msg.error{ align-self:flex-start; background:#fbe9e7; border:1px solid var(--vino); color:var(--vino); }
-  .cursor-typing{ display:inline-block; width:2px; height:1em; background:var(--oro); vertical-align:middle; margin-left:1px; animation:blink 0.8s step-end infinite; }
-  @keyframes blink{ 50%{opacity:0;} }
-  .typing-dots{ align-self:flex-start; background:var(--papel-claro); border:1px solid var(--linea); padding:13px 18px; border-radius:8px; border-bottom-left-radius:2px; display:flex; gap:4px; }
-  .typing-dots span{ width:6px; height:6px; border-radius:50%; background:#a8ac9e; animation:rebote 1.1s infinite; }
-  .typing-dots span:nth-child(2){ animation-delay:.15s; } .typing-dots span:nth-child(3){ animation-delay:.3s; }
-  @keyframes rebote{ 0%,60%,100%{transform:translateY(0); opacity:.5;} 30%{transform:translateY(-4px); opacity:1;} }
-  .chat-inputbar{ display:flex; gap:10px; padding:18px 30px; border-top:1px solid var(--linea); }
-  .chat-inputbar input{ flex:1; padding:12px 16px; border:1px solid var(--linea); border-radius:24px; font-size:0.9rem; font-family:'Inter',sans-serif; }
-  .chat-inputbar input:focus{ outline:none; border-color:var(--oro); }
-  .chat-inputbar button{ background:var(--oro); color:#241a0d; border:none; padding:0 22px; border-radius:24px; font-weight:700; font-size:0.85rem; cursor:pointer; font-family:'Inter',sans-serif; }
-  .chat-inputbar button:disabled{ opacity:0.5; cursor:default; }
-
-  /* ===== PANEL DERECHO: PROYECTO VIVO ===== */
-  .panel{ background:var(--papel-claro); display:flex; flex-direction:column; min-height:0; overflow:hidden; }
-  .tabs{ display:flex; border-bottom:1px solid var(--linea); }
-  .tab{ flex:1; text-align:center; padding:15px 0; font-size:0.78rem; font-weight:600; cursor:pointer; color:#8a8478; }
-  .tab.activo{ color:var(--verde); border-bottom:2px solid var(--oro); }
-  .panel-body{ padding:24px 22px; overflow-y:auto; flex:1; }
-  .badge-proyecto{ font-size:0.68rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--oro); margin-bottom:6px; }
-  .titulo-proyecto{ font-family:'Poppins',sans-serif; font-size:1.3rem; margin-bottom:18px; color:var(--ink); }
-  .campo{ margin-bottom:18px; }
-  .campo label{ display:block; font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#8a8478; margin-bottom:4px; }
-  .campo .valor{ font-size:0.88rem; color:var(--texto); line-height:1.5; }
-  .progreso-wrap{ margin:20px 0 24px; }
-  .progreso-bar{ background:var(--linea); border-radius:20px; height:7px; overflow:hidden; margin-top:6px; }
-  .progreso-fill{ background:var(--oro); height:100%; border-radius:20px; transition:width .5s ease; width:0%; }
-  .progreso-pct{ font-size:0.72rem; color:#8a8478; margin-top:5px; }
-  .persona-card{ background:#fff; border:1px solid var(--linea); border-radius:6px; padding:12px 14px; margin-bottom:10px; }
-  .persona-card b{ font-size:0.85rem; color:var(--verde); display:block; margin-bottom:2px; }
-  .persona-card span{ font-size:0.78rem; color:#7a8a80; }
-  .vacio{ font-size:0.82rem; color:#a8ac9e; font-style:italic; }
-  .evento{ border-left:2px solid var(--oro); padding-left:14px; margin-bottom:16px; position:relative; }
-  .evento::before{ content:''; position:absolute; left:-5px; top:2px; width:8px; height:8px; border-radius:50%; background:var(--oro); }
-  .evento b{ font-size:0.85rem; display:block; margin-bottom:2px; }
-  .evento span{ font-size:0.78rem; color:#7a8a80; }
-
-  /* ===== LOGIN ===== */
-  .login-overlay{
-    position:fixed; inset:0; background:var(--papel); display:flex; align-items:center; justify-content:center; z-index:100;
+  .msg.bot{
+    align-self:flex-start; background:var(--papel-claro); border:1px solid var(--linea); color:#2a352f;
+    border-bottom-left-radius:2px;
   }
-  .login-box{ width:340px; text-align:center; }
-  .login-box .logo{ color:var(--ink); font-size:1.4rem; margin-bottom:6px; }
-  .login-box .logo span{ color:var(--oro); }
-  .login-box p{ font-size:0.85rem; color:#5a665e; margin-bottom:24px; }
-  .login-box input{ width:100%; padding:12px 14px; border:1px solid var(--linea); border-radius:6px; font-family:'Inter',sans-serif; font-size:0.88rem; margin-bottom:12px; }
-  .login-box button{ width:100%; padding:12px; background:var(--oro); color:#20140a; border:none; border-radius:26px; font-weight:700; font-size:0.88rem; cursor:pointer; font-family:'Inter',sans-serif; }
-  .login-box button:disabled{ opacity:0.6; }
-  .login-msg{ font-size:0.78rem; margin-top:14px; color:var(--vino); min-height:1em; }
+  .msg.user{
+    align-self:flex-end; background:var(--verde); color:var(--papel-claro); border-bottom-right-radius:2px;
+  }
+  .msg .cursor-typing{ display:inline-block; width:2px; height:1em; background:var(--oro); vertical-align:middle; margin-left:1px; animation:blink 0.8s step-end infinite; }
+  .quick-replies{ display:flex; flex-wrap:wrap; gap:8px; align-self:flex-start; max-width:80%; margin-top:-4px; }
+  .chip-reply{
+    font-family:'Inter',sans-serif; font-size:0.82rem; font-weight:600; background:#fff; color:var(--verde);
+    border:1px solid var(--verde); padding:9px 15px; border-radius:20px; cursor:pointer; transition:all .15s;
+  }
+  .chip-reply:hover{ background:var(--verde); color:var(--papel-claro); }
+  .typing-dots{ align-self:flex-start; background:var(--papel-claro); border:1px solid var(--linea); padding:13px 18px; border-radius:6px; border-bottom-left-radius:2px; display:flex; gap:4px; }
+  .typing-dots span{ width:6px; height:6px; border-radius:50%; background:#a8ac9e; animation:rebote 1.1s infinite; }
+  .typing-dots span:nth-child(2){ animation-delay:.15s; }
+  .typing-dots span:nth-child(3){ animation-delay:.3s; }
+  @keyframes rebote{ 0%,60%,100%{ transform:translateY(0); opacity:0.5;} 30%{ transform:translateY(-4px); opacity:1;} }
+  .chat-inputbar{
+    display:flex; gap:10px; padding:18px 40px; border-top:1px solid var(--linea); background:var(--papel-claro);
+  }
+  .chat-inputbar input{
+    flex:1; font-family:'Inter',sans-serif; font-size:0.9rem; padding:12px 16px; border:1px solid var(--linea);
+    border-radius:24px; background:#fff;
+  }
+  .chat-inputbar input:focus{ outline:none; border-color:var(--oro); }
+  .chat-send{
+    font-family:'Inter',sans-serif; font-weight:600; font-size:0.85rem; padding:0 22px; border-radius:24px;
+    border:none; background:var(--oro); color:#241a0d; cursor:pointer;
+  }
+  .chat-send:hover{ background:#a67c42; }
 
-  /* ===== MODAL MIS LIBROS ===== */
-  .modal-overlay{ position:fixed; inset:0; background:rgba(28,42,36,0.45); display:flex; align-items:center; justify-content:center; z-index:90; }
-  .modal-box{ background:#fff; width:420px; max-height:70vh; overflow-y:auto; border-radius:8px; padding:22px; }
-  .modal-box h3{ font-family:'Poppins',sans-serif; margin-bottom:14px; }
-  .libro-item{ padding:12px; border:1px solid var(--linea); border-radius:6px; margin-bottom:8px; cursor:pointer; }
-  .libro-item:hover{ border-color:var(--oro); }
-  .libro-item b{ display:block; font-size:0.88rem; }
-  .libro-item span{ font-size:0.75rem; color:#8a8478; }
-  .modal-cerrar{ margin-top:10px; background:none; border:none; color:#8a8478; cursor:pointer; font-size:0.82rem; font-family:'Inter',sans-serif; }
+  /* ===== PRICING ===== */
+  .toggle{
+    display:inline-flex; background:var(--papel-claro); border:1px solid var(--linea); border-radius:30px;
+    padding:4px; font-family:'Inter',sans-serif; font-size:0.85rem; font-weight:600; margin-bottom:44px;
+  }
+  .toggle button{
+    border:none; background:none; padding:9px 20px; border-radius:26px; cursor:pointer; color:#4a564e;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:0.85rem;
+  }
+  .toggle button.activo{ background:var(--verde); color:var(--papel-claro); }
+  .planes{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .plan{
+    border:1px solid var(--linea); border-radius:6px; padding:32px 28px; background:var(--papel-claro);
+    display:flex; flex-direction:column;
+  }
+  .plan.destacado{ border-color:var(--oro); box-shadow:0 20px 50px -30px rgba(185,139,78,0.5); position:relative; }
+  .badge{
+    position:absolute; top:-13px; right:28px; background:var(--oro); color:#241a0d; font-family:'Inter',sans-serif;
+    font-size:0.7rem; font-weight:700; padding:5px 12px; border-radius:20px; letter-spacing:0.03em;
+  }
+  .plan h3{ font-size:1.3rem; margin-bottom:6px; }
+  .plan .precio{ font-family:'Poppins',sans-serif; font-size:2.4rem; margin:14px 0 4px; }
+  .plan .precio span{ font-family:'Inter',sans-serif; font-size:0.95rem; font-weight:500; color:#7a8a80; }
+  .plan .desc{ font-size:0.9rem; color:#5a665e; margin-bottom:22px; min-height:40px; }
+  .plan ul{ list-style:none; margin-bottom:28px; flex:1; }
+  .plan li{ font-family:'Inter',sans-serif; font-size:0.87rem; padding:8px 0; border-top:1px solid var(--linea); color:#3a4a42; }
+  .plan li:first-child{ border-top:none; }
 
-  /* ===== MODAL KDP ===== */
-  .modal-kdp{ width:520px; }
-  .kdp-resumen{ display:flex; align-items:center; gap:14px; margin-bottom:20px; }
-  .kdp-resumen .progreso-bar{ flex:1; }
-  .kdp-resumen .progreso-pct{ margin:0; white-space:nowrap; font-weight:700; color:var(--verde); }
-  .kdp-categoria{ margin-bottom:18px; }
-  .kdp-categoria h4{ font-family:'Inter',sans-serif; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--oro); margin-bottom:8px; font-weight:700; }
-  .kdp-item{ display:flex; align-items:flex-start; gap:10px; padding:9px 0; border-bottom:1px solid var(--linea); font-size:0.85rem; cursor:pointer; }
-  .kdp-item:last-child{ border-bottom:none; }
-  .kdp-item input{ margin-top:3px; accent-color:var(--verde); width:16px; height:16px; flex-shrink:0; }
-  .kdp-item span.hecho{ text-decoration:line-through; color:#a8ac9e; }
+  .servicios{ margin-top:80px; }
+  .servicios-lista{ border-top:1px solid var(--linea); }
+  .servicio-item{
+    display:flex; justify-content:space-between; align-items:center; padding:22px 0;
+    border-bottom:1px solid var(--linea); gap:24px;
+  }
+  .servicio-item h4{ font-family:'Poppins',sans-serif; font-size:1.15rem; margin-bottom:4px; }
+  .servicio-item p{ font-size:0.88rem; color:#5a665e; }
+  .servicio-precio{ font-family:'Inter',sans-serif; font-weight:700; color:var(--vino); white-space:nowrap; font-size:1rem; }
 
-  /* ===== HERRAMIENTAS: editor, portada, regalías ===== */
-  .modal-ancho{ width:640px; max-height:80vh; }
-  .herr-textarea{ width:100%; min-height:160px; padding:12px 14px; border:1px solid var(--linea); border-radius:6px; font-family:'Inter',sans-serif; font-size:0.85rem; resize:vertical; margin-bottom:12px; }
-  .herr-btn{ background:var(--oro); color:#20140a; border:none; padding:11px 20px; border-radius:24px; font-weight:700; font-size:0.85rem; cursor:pointer; font-family:'Inter',sans-serif; }
-  .herr-btn:hover{ background:#c99a45; }
-  .herr-btn:disabled{ opacity:0.6; cursor:default; }
-  .herr-resultado{ margin-top:16px; padding:16px; background:var(--papel-claro); border:1px solid var(--linea); border-radius:6px; font-size:0.85rem; line-height:1.65; white-space:pre-wrap; }
-  .herr-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; }
-  .herr-campo label{ display:block; font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:#8a8478; margin-bottom:5px; }
-  .herr-campo select, .herr-campo input{ width:100%; padding:9px 10px; border:1px solid var(--linea); border-radius:5px; font-family:'Inter',sans-serif; font-size:0.85rem; }
-  .herr-metricas{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px; }
-  .herr-metrica{ background:var(--papel-claro); border:1px solid var(--linea); border-radius:6px; padding:12px 14px; }
-  .herr-metrica label{ font-size:0.68rem; text-transform:uppercase; letter-spacing:0.04em; color:#8a8478; font-weight:700; display:block; margin-bottom:3px; }
-  .herr-metrica .valor{ font-family:'Poppins',sans-serif; font-size:1.25rem; color:var(--verde); }
-  .herr-metrica .valor.negativo{ color:var(--vino); }
-  .herr-nota{ font-size:0.75rem; color:#8a8478; margin-top:14px; line-height:1.5; }
-  .metadato-bloque{ margin-bottom:14px; }
-  .metadato-bloque h5{ font-family:'Inter',sans-serif; font-size:0.7rem; text-transform:uppercase; color:var(--oro); font-weight:700; margin-bottom:5px; }
-  .metadato-bloque p, .metadato-bloque ul{ font-size:0.85rem; color:var(--texto); line-height:1.5; }
-  .metadato-bloque ul{ padding-left:18px; }
-  .copiar-btn{ font-size:0.72rem; color:var(--verde); background:none; border:1px solid var(--verde); border-radius:14px; padding:3px 10px; cursor:pointer; margin-top:4px; font-family:'Inter',sans-serif; }
+  footer{
+    background:var(--ink); color:#c9d3cb; padding:60px 6vw 30px; text-align:center;
+  }
+  footer h2{ color:var(--papel-claro); font-size:1.8rem; margin-bottom:18px; }
+  footer p{ color:#9aa89f; margin-bottom:28px; }
+  .foot-fine{ margin-top:50px; font-family:'Inter',sans-serif; font-size:0.75rem; color:#5a665e; }
+
+  @media(max-width:880px){
+    .hero{ grid-template-columns:1fr; }
+    .pasos{ grid-template-columns:1fr 1fr; }
+    .planes{ grid-template-columns:1fr; }
+    .app-body{ grid-template-columns:1fr; }
+    .app-editor{ border-right:none; border-bottom:1px solid var(--linea); }
+    .nav-links{ display:none; }
+  }
 </style>
 </head>
 <body>
 
-<div class="login-overlay" id="loginOverlay">
-  <div class="login-box">
-    <img src="logo-escritores-hispanos.png" alt="Escritores Hispanos" style="width:88px; height:88px; margin:0 auto 14px; display:block;">
-    <p>Inicia sesión con tu correo. Te enviamos un enlace, sin contraseña.</p>
-    <input type="email" id="loginEmail" placeholder="tu@correo.com">
-    <button id="loginBtn">Enviar enlace mágico</button>
-    <div class="login-msg" id="loginMsg"></div>
+<div class="anuncio">ESCRITO CON IA · TU LIBRO DE LA IDEA A AMAZON KDP</div>
+<nav>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <img src="logo-escritores-hispanos.png" alt="Escritores Hispanos" style="width:42px; height:42px; border-radius:50%;">
+    <div class="logo">Escritores<span>Hispanos</span> <span class="u" style="font-size:0.7rem; opacity:0.6; margin-left:6px;">app</span></div>
   </div>
-</div>
+  <div class="nav-links">
+    <a href="#proceso">Proceso</a>
+    <a href="#app">La app</a>
+    <a href="#precios">Precios</a>
+    <a href="#servicios">Servicios</a>
+  </div>
+  <a href="director-editorial-app.html" class="btn">Empezar a escribir</a>
+</nav>
 
-<div class="layout" id="appLayout" style="display:none;">
-  <div class="sidebar">
-    <div style="text-align:center; margin-bottom:6px;">
-      <img src="logo-escritores-hispanos.png" alt="Escritores Hispanos" style="width:76px; height:76px; display:block; margin:0 auto 8px;">
+<section class="hero">
+  <div>
+    <span class="eyebrow">De la idea al libro publicado</span>
+    <h1 id="typed">Escribe tu libro.<br>Publícalo en Amazon.<span class="cursor">&nbsp;</span></h1>
+    <p class="lead">La primera plataforma en español que te acompaña en todo el camino: inspiración, corrección, maquetación, portada y publicación en Amazon KDP — con inteligencia artificial en cada paso.</p>
+    <div class="hero-cta">
+      <a href="director-editorial-app.html" class="btn btn-oro">Prueba gratis 7 días</a>
+      <a href="#app" class="btn btn-ghost">Ver cómo funciona</a>
     </div>
-    <div class="rol" style="text-align:center; margin-bottom:20px;">Director Editorial</div>
-    <button class="btn-nuevo" id="btnNuevo">+ Nuevo libro</button>
-    <div class="nav-item activo"><span class="nav-icon">◆</span> Conversación</div>
-    <div class="nav-item" title="Disponible en la versión completa"><span class="nav-icon">▤</span> Mis libros</div>
-    <div class="nav-item" id="navEditor"><span class="nav-icon">✎</span> Editor inteligente</div>
-    <div class="nav-item" id="navFormato"><span class="nav-icon">📄</span> Formatear manuscrito</div>
-    <div class="nav-item" id="navTraduccion"><span class="nav-icon">🌐</span> Traducción</div>
-    <div class="nav-item" title="Disponible en la versión completa"><span class="nav-icon">◐</span> Memoria editorial</div>
-    <div class="nav-item" id="navPortada"><span class="nav-icon">🎨</span> Calculadora de portada</div>
-    <div class="nav-item" id="navPortadaIA"><span class="nav-icon">🖼️</span> Generar portada con IA</div>
-    <div class="nav-item" id="navRegalias"><span class="nav-icon">€</span> Precio y regalías</div>
-    <div class="nav-item" id="navKdp"><span class="nav-icon">↗</span> Publicar en KDP</div>
-    <div class="uso-box" id="usoBox">
-      <div class="uso-plan"><b id="usoPlanNombre">Gratis</b><a href="#" id="btnAbrirMejorarPlan">Mejorar plan →</a></div>
-      <div class="uso-bar"><div class="uso-fill" id="usoFill" style="width:0%"></div></div>
-      <div class="uso-txt" id="usoTexto">0 / 10.000 palabras este mes</div>
-      <select id="selectorPlanPrueba" class="u" style="width:100%; margin-top:10px; font-size:0.72rem; padding:6px; border-radius:4px; border:1px solid #3a4a42; background:var(--ink); color:#c9d3cb; font-family:'Inter',sans-serif;">
-        <option value="gratis">🧪 Probar como: Gratis</option>
-        <option value="pro">🧪 Probar como: Escritor Pro</option>
-        <option value="premium">🧪 Probar como: Autor Premium</option>
-      </select>
-    </div>
-    <div class="sidebar-foot">Escritores Hispanos<br>Prototipo — v0.3</div>
+    <span class="hero-note u">Sin tarjeta de crédito · Cancela cuando quieras</span>
   </div>
 
-  <div class="centro">
-    <div class="chat-header">
-      <h1>Director Editorial</h1>
-      <p>Seguimiento del contexto y de los acontecimientos</p>
-    </div>
-    <div class="chat-scroll" id="chatScroll"></div>
-    <div class="chat-inputbar">
-      <input type="text" id="chatInput" placeholder="Cuéntame libremente qué deseas escribir…" autocomplete="off">
-      <button id="chatSend">Enviar</button>
-    </div>
+  <div class="manuscrito">
+    <h4>Manuscrito · Capítulo 3</h4>
+    <p>El faro llevaba <span class="tachado">muchísimos</span> <span class="insercion">décadas</span> apagado <span class="nota-margen">¿repetido?</span> cuando Marina decidió volver al pueblo. La <span class="circulo">niebla</span> cubría el muelle como si el mar quisiera esconder algo.</p>
+    <p style="margin-top:14px;">— <span class="nota-margen">buen ritmo aquí, mantenlo →</span></p>
+    <p style="margin-top:14px; color:#8a8478; font-size:0.85rem;">Nadie recordaba con exactitud cuándo había dejado de funcionar la luz, pero todos sabían que, desde entonces, algo en el pueblo también se había apagado.</p>
   </div>
+</section>
 
-  <div class="panel">
-    <div class="tabs">
-      <div class="tab activo" data-tab="proyecto">Proyecto</div>
-      <div class="tab" data-tab="contexto">Contexto</div>
-      <div class="tab" data-tab="cronologia">Cronología</div>
+<section class="pipeline" id="proceso">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow u">El camino del autor</span>
+      <h2>Cuatro etapas, un solo lugar</h2>
+      <p>Cada libro sigue el mismo recorrido. Nosotros lo hacemos más simple, más rápido y sin depender de diez herramientas distintas.</p>
     </div>
-    <div class="panel-body" id="panelProyecto">
-      <div class="badge-proyecto">Proyecto vivo</div>
-      <div class="titulo-proyecto" id="pTitulo">Sin título aún</div>
-
-      <div class="progreso-wrap">
-        <label style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#8a8478;">Proyecto identificado</label>
-        <div class="progreso-bar"><div class="progreso-fill" id="pFill"></div></div>
-        <div class="progreso-pct" id="pPct">0%</div>
+    <div class="pasos">
+      <div class="paso">
+        <span class="num">01</span>
+        <h3>Inspírate y escribe</h3>
+        <p>Genera ideas, desarrolla personajes y tramas, y escribe con un asistente de IA entrenado en narrativa en español.</p>
       </div>
-
-      <div class="campo"><label>Tipo</label><div class="valor" id="pTipo">—</div></div>
-      <div class="campo"><label>Objetivo</label><div class="valor" id="pObjetivo">—</div></div>
-      <div class="campo"><label>Tono</label><div class="valor" id="pTono">—</div></div>
-      <div class="campo"><label>Resumen</label><div class="valor" id="pResumen">—</div></div>
-    </div>
-    <div class="panel-body" id="panelContexto" style="display:none;">
-      <div class="badge-proyecto">Personas</div>
-      <div id="listaPersonas"><div class="vacio">Todavía no se identifican personas en la historia.</div></div>
-    </div>
-    <div class="panel-body" id="panelCronologia" style="display:none;">
-      <div class="badge-proyecto">Cronología</div>
-      <div id="listaEventos"><div class="vacio">Todavía no hay acontecimientos registrados.</div></div>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modalLibros" style="display:none;">
-  <div class="modal-box">
-    <h3>Mis libros</h3>
-    <div id="listaLibros"></div>
-    <button class="modal-cerrar" id="cerrarModal">Cerrar</button>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modalKdp" style="display:none;">
-  <div class="modal-box modal-kdp">
-    <h3>Checklist de publicación en Amazon KDP</h3>
-    <div class="kdp-resumen">
-      <div class="progreso-bar" style="margin-top:0;"><div class="progreso-fill" id="kdpFill"></div></div>
-      <div class="progreso-pct" id="kdpPct">0%</div>
-    </div>
-    <div id="listaKdp"></div>
-    <button class="modal-cerrar" id="cerrarModalKdp">Cerrar</button>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modalEditor" style="display:none;">
-  <div class="modal-box modal-ancho">
-    <h3>Editor inteligente — corrección gramatical</h3>
-    <p style="font-size:0.82rem; color:#5a665e; margin-bottom:12px;">Pega un capítulo o fragmento (hasta ~800 palabras funciona mejor) y recibe corrección de ortografía, tildes, puntuación y concordancia — igual que un corrector profesional. Para retroalimentación de estilo o narrativa, habla con el Director Editorial en la conversación principal.</p>
-    <textarea class="herr-textarea" id="editorInput" placeholder="Pega aquí tu texto…"></textarea>
-    <button class="herr-btn" id="btnCorregir">Corregir con IA</button>
-    <div id="editorResultado"></div>
-    <button class="modal-cerrar" id="cerrarModalEditor">Cerrar</button>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modalPortada" style="display:none;">
-  <div class="modal-box modal-ancho">
-    <h3>Calculadora de medidas de portada KDP</h3>
-    <p style="font-size:0.82rem; color:#5a665e; margin-bottom:14px;">Calcula las medidas exactas de tu portada (tapa blanda) según el tamaño y páginas de tu libro, con sangrado y resolución para imprenta.</p>
-    <div class="herr-grid">
-      <div class="herr-campo">
-        <label>Tamaño de trim</label>
-        <select id="trimSize">
-          <option value="5x8">5 × 8 in</option>
-          <option value="5.5x8.5">5.5 × 8.5 in</option>
-          <option value="6x9" selected>6 × 9 in</option>
-          <option value="8.5x11">8.5 × 11 in</option>
-        </select>
+      <div class="paso">
+        <span class="num">02</span>
+        <h3>Corrige</h3>
+        <p>Corrección ortográfica, de estilo y de ritmo. La IA señala en el margen, como un editor real, qué mejorar y por qué.</p>
       </div>
-      <div class="herr-campo">
-        <label>Número de páginas</label>
-        <input type="number" id="numPaginas" value="200" min="24">
+      <div class="paso">
+        <span class="num">03</span>
+        <h3>Diseña y maqueta</h3>
+        <p>Portada generada con IA y maquetación automática lista para tapa blanda, tapa dura o ebook.</p>
       </div>
-      <div class="herr-campo">
-        <label>Tipo de papel</label>
-        <select id="tipoPapel">
-          <option value="blanco">Blanco</option>
-          <option value="crema">Crema</option>
-        </select>
-      </div>
-      <div class="herr-campo">
-        <label>Tipo de tapa</label>
-        <select id="tipoTapa"><option value="blanda">Tapa blanda</option></select>
+      <div class="paso">
+        <span class="num">04</span>
+        <h3>Publica en KDP</h3>
+        <p>Exporta en los formatos exactos que exige Amazon KDP, con checklist guiado paso a paso hasta la publicación.</p>
       </div>
     </div>
-    <button class="herr-btn" id="btnCalcularPortada">Calcular medidas</button>
-    <div id="portadaResultado"></div>
-    <button class="modal-cerrar" id="cerrarModalPortada">Cerrar</button>
   </div>
-</div>
+</section>
 
-<div class="modal-overlay" id="modalPortadaIA" style="display:none;">
-  <div class="modal-box modal-ancho">
-    <h3>Generar portada con IA</h3>
-    <p style="font-size:0.82rem; color:#5a665e; margin-bottom:12px;">Genera la ilustración de tu portada con IA (DALL·E). Se genera <strong>solo la imagen, sin texto</strong> — el título se agrega después con diseño, así se ve profesional.</p>
-    <div class="herr-campo" style="margin-bottom:10px;">
-      <label>Estilo visual</label>
-      <select id="estiloPortada">
-        <option value="ilustración digital detallada, colores ricos">Ilustración digital</option>
-        <option value="fotografía realista, iluminación cinematográfica">Fotorrealista</option>
-        <option value="acuarela suave, texturas de papel">Acuarela</option>
-        <option value="diseño minimalista, formas geométricas planas">Minimalista/geométrico</option>
-        <option value="arte de fantasía épico, atmosférico">Fantasía</option>
-        <option value="blanco y negro, alto contraste, estilo noir">Noir / blanco y negro</option>
-      </select>
+<section id="app">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow u">La app</span>
+      <h2>No empiezas con una página en blanco. Empiezas con una conversación</h2>
+      <p>El sistema te hace las preguntas correctas — igual que un editor humano en la primera reunión — y a partir de tus respuestas arma tu plan de escritura. Pruébalo, es real:</p>
     </div>
-    <textarea class="herr-textarea" id="portadaPrompt" style="min-height:90px;" placeholder="Describe la escena o imagen para tu portada (ej: un faro solitario en un acantilado al atardecer, niebla en el mar)…"></textarea>
-    <div style="display:flex; gap:10px; margin-bottom:6px;">
-      <button class="herr-btn" id="btnSugerirPrompt" style="background:var(--papel-claro); color:var(--verde); border:1px solid var(--verde);">✨ Sugerir a partir de mi proyecto</button>
-      <button class="herr-btn" id="btnGenerarPortada">🎨 Generar portada</button>
-    </div>
-    <div id="portadaIaResultado"></div>
-    <button class="modal-cerrar" id="cerrarModalPortadaIA">Cerrar</button>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modalTraduccion" style="display:none;">
-  <div class="modal-box modal-ancho">
-    <h3>Traducción literaria</h3>
-    <p style="font-size:0.82rem; color:#5a665e; margin-bottom:12px;">Pega un fragmento (hasta ~800 palabras funciona mejor). La traducción cuida el tono y la voz narrativa, no es traducción palabra por palabra.</p>
-    <div class="herr-campo" style="margin-bottom:12px; max-width:260px;">
-      <label>Traducir a</label>
-      <select id="idiomaDestino">
-        <option value="inglés">🇬🇧 Inglés</option>
-        <option value="alemán">🇩🇪 Alemán</option>
-        <option value="italiano">🇮🇹 Italiano</option>
-        <option value="francés">🇫🇷 Francés</option>
-        <option value="portugués">🇵🇹 Portugués</option>
-      </select>
-    </div>
-    <textarea class="herr-textarea" id="traduccionInput" placeholder="Pega aquí tu texto en español…"></textarea>
-    <button class="herr-btn" id="btnTraducir">Traducir con IA</button>
-    <div id="traduccionResultado"></div>
-    <button class="modal-cerrar" id="cerrarModalTraduccion">Cerrar</button>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modalFormato" style="display:none;">
-  <div class="modal-box modal-ancho">
-    <h3>Formatear manuscrito para KDP</h3>
-    <p style="font-size:0.82rem; color:#5a665e; margin-bottom:12px;">Pega tu manuscrito completo (usa "Capítulo" o "###" al inicio de una línea para marcar el comienzo de cada capítulo — empezará en página nueva).</p>
-    <textarea class="herr-textarea" id="formatoInput" style="min-height:120px;" placeholder="Pega aquí tu manuscrito completo…"></textarea>
-    <div class="herr-grid">
-      <div class="herr-campo">
-        <label>Tamaño de trim</label>
-        <select id="formatoTrim">
-          <option value="5x8">5 × 8 in</option>
-          <option value="5.5x8.5">5.5 × 8.5 in</option>
-          <option value="6x9" selected>6 × 9 in</option>
-          <option value="8.5x11">8.5 × 11 in</option>
-        </select>
+    <div class="app-frame">
+      <div class="app-topbar">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        <span class="app-url u">app.escritoreshispanos.com/nuevo-proyecto</span>
       </div>
-      <div class="herr-campo">
-        <label>Páginas estimadas</label>
-        <input type="number" id="formatoPaginas" value="200" min="24">
-      </div>
-      <div class="herr-campo">
-        <label>¿Incluye imágenes a sangre?</label>
-        <select id="formatoSangrado"><option value="no">No (la mayoría de novelas)</option><option value="si">Sí, con sangrado</option></select>
-      </div>
-      <div class="herr-campo">
-        <label>Fuente del interior</label>
-        <select id="formatoFuente"><option value="Garamond">Garamond</option><option value="Georgia">Georgia</option><option value="Times New Roman">Times New Roman</option></select>
+      <div class="chat-window">
+        <div class="chat-scroll" id="chatScroll"></div>
+        <div class="chat-inputbar">
+          <input type="text" id="chatInput" placeholder="Escribe tu respuesta o cuéntame tu idea…" autocomplete="off">
+          <button class="chat-send u" id="chatSend">Enviar</button>
+        </div>
       </div>
     </div>
-    <button class="herr-btn" id="btnCalcularMargenes">Calcular márgenes</button>
-    <div id="margenesResultado"></div>
-    <div id="formatoAcciones" style="display:none; margin-top:16px; gap:10px;">
-      <button class="herr-btn" id="btnVistaImpresion">🖨️ Vista previa e imprimir a PDF</button>
-      <button class="herr-btn" id="btnDescargarWord" style="background:var(--oro); color:#241a0d;">⬇️ Descargar como Word (.docx)</button>
-    </div>
-    <p class="herr-nota">El PDF (vista previa e imprimir) respeta el margen interior/exterior espejado real, página por página, tal como lo pide KDP. El Word usa el margen interior como margen izquierdo fijo en todas las páginas — funciona para revisar y editar, pero antes de subirlo a KDP, en Word activa <em>Diseño de página → Márgenes → Márgenes personalizados → "Páginas opuestas"</em> para que el espejado quede perfecto, o usa directamente el PDF generado aquí.</p>
-    <p class="herr-nota" id="notaEpub">¿Necesitas EPUB para Kindle? Genera primero tu Word aquí, y conviértelo gratis con <a href="https://www.reedsy.com/write-a-book" target="_blank" style="color:var(--verde); font-weight:600;">Reedsy Book Editor</a> o <a href="https://calibre-ebook.com" target="_blank" style="color:var(--verde); font-weight:600;">Calibre</a> — el EPUB es un formato "líquido" (sin páginas fijas), por lo que no se beneficia de las medidas exactas que sí necesita el PDF/tapa blanda.</p>
-    <button class="modal-cerrar" id="cerrarModalFormato">Cerrar</button>
   </div>
-</div>
+</section>
 
-<div class="modal-overlay" id="modalMejorarPlan" style="display:none;">
-  <div class="modal-box modal-ancho">
-    <h3>Mejora tu plan</h3>
-    <p style="font-size:0.82rem; color:#5a665e; margin-bottom:18px;">Pago seguro procesado por Stripe. Puedes cancelar cuando quieras desde el correo de confirmación que recibas.</p>
-    <div class="herr-grid" style="grid-template-columns:1fr 1fr;">
-      <div style="border:1px solid var(--linea); border-radius:8px; padding:20px;">
-        <div style="font-weight:700; font-size:1.05rem; margin-bottom:4px;">Escritor Pro</div>
-        <div style="font-family:'Poppins',sans-serif; font-size:1.6rem; margin-bottom:10px;">€19<span style="font-size:0.8rem; font-weight:400;">/mes</span></div>
-        <ul style="font-size:0.78rem; color:#5a665e; padding-left:18px; margin-bottom:16px; line-height:1.6;">
-          <li>150.000 palabras de IA/mes</li>
-          <li>Corrección, traducción, formateo</li>
-          <li>Checklist de publicación KDP</li>
+<section id="precios">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow u">Precios</span>
+      <h2>Un plan para cada etapa de tu libro</h2>
+      <p>Empieza gratis. Sube de plan cuando estés listo para maquetar y publicar.</p>
+    </div>
+
+    <div class="toggle u">
+      <button class="activo">Mensual</button>
+      <button>Anual — 2 meses gratis</button>
+    </div>
+
+    <div class="planes">
+      <div class="plan">
+        <h3>Aprendiz</h3>
+        <div class="desc">Para empezar a escribir y probar el asistente de IA.</div>
+        <div class="precio">€0<span>/mes</span></div>
+        <ul>
+          <li class="u">10.000 palabras de IA / mes</li>
+          <li class="u">Editor y guardado en la nube</li>
+          <li class="u">Corrección ortográfica básica</li>
+          <li class="u">1 manuscrito activo</li>
         </ul>
-        <button class="herr-btn" style="width:100%;" data-price-plan="pro">Suscribirme</button>
+        <a href="director-editorial-app.html?plan=gratis" class="btn btn-ghost">Crear cuenta gratis</a>
       </div>
-      <div style="border:2px solid var(--oro); border-radius:8px; padding:20px;">
-        <div style="font-weight:700; font-size:1.05rem; margin-bottom:4px;">Autor Premium</div>
-        <div style="font-family:'Poppins',sans-serif; font-size:1.6rem; margin-bottom:10px;">€39<span style="font-size:0.8rem; font-weight:400;">/mes</span></div>
-        <ul style="font-size:0.78rem; color:#5a665e; padding-left:18px; margin-bottom:16px; line-height:1.6;">
-          <li>Palabras de IA ilimitadas</li>
-          <li>Generación de portadas con IA</li>
-          <li>Todo lo de Escritor Pro</li>
+
+      <div class="plan destacado">
+        <span class="badge u">MÁS ELEGIDO</span>
+        <h3>Escritor Pro</h3>
+        <div class="desc">Para quienes están escribiendo su libro en serio.</div>
+        <div class="precio">€19<span>/mes</span></div>
+        <ul>
+          <li class="u">150.000 palabras de IA / mes</li>
+          <li class="u">Corrección de estilo y ritmo avanzada</li>
+          <li class="u">Maquetación automática (ebook + tapa blanda)</li>
+          <li class="u">3 portadas generadas por IA / mes</li>
+          <li class="u">Manuscritos ilimitados</li>
+          <li class="u">Checklist guiado de publicación en KDP</li>
         </ul>
-        <button class="herr-btn" style="width:100%;" data-price-plan="premium">Suscribirme</button>
+        <a href="director-editorial-app.html?plan=pro" class="btn btn-oro">Empezar prueba de 7 días</a>
       </div>
-    </div>
-    <div id="mejorarPlanEstado" style="margin-top:14px; font-size:0.82rem; color:var(--vino);"></div>
-    <button class="modal-cerrar" id="cerrarModalMejorarPlan">Cerrar</button>
-  </div>
-</div>
 
-<div class="modal-overlay" id="modalRegalias" style="display:none;">
-  <div class="modal-box modal-ancho">
-    <h3>Calculadora de precio y regalías</h3>
-    <div class="herr-grid">
-      <div class="herr-campo">
-        <label>Formato</label>
-        <select id="formatoRegalia">
-          <option value="tapa-blanda">Tapa blanda</option>
-          <option value="ebook">eBook (Kindle)</option>
-        </select>
-      </div>
-      <div class="herr-campo" id="campoTinta">
-        <label>Tipo de tinta</label>
-        <select id="tintaRegalia"><option value="byn">Blanco y negro</option><option value="color">Color</option></select>
-      </div>
-      <div class="herr-campo" id="campoPaginasRegalia">
-        <label>Número de páginas</label>
-        <input type="number" id="paginasRegalia" value="200" min="24">
-      </div>
-      <div class="herr-campo">
-        <label>Precio de venta (US$)</label>
-        <input type="number" id="precioRegalia" value="14.99" step="0.01" min="0">
+      <div class="plan">
+        <h3>Autor Premium</h3>
+        <div class="desc">Para autores publicando varios libros al año.</div>
+        <div class="precio">€39<span>/mes</span></div>
+        <ul>
+          <li class="u">Palabras de IA ilimitadas</li>
+          <li class="u">Portadas ilimitadas</li>
+          <li class="u">Exportación en todos los formatos KDP</li>
+          <li class="u">Revisión humana de 1 capítulo / mes</li>
+          <li class="u">20% de descuento en servicios extra</li>
+          <li class="u">Soporte prioritario</li>
+        </ul>
+        <a href="director-editorial-app.html?plan=premium" class="btn btn-ghost">Empezar prueba de 7 días</a>
       </div>
     </div>
-    <button class="herr-btn" id="btnCalcularRegalia">Calcular</button>
-    <div class="herr-metricas" id="regaliaResultado" style="display:none;">
-      <div class="herr-metrica"><label>Costo de impresión</label><div class="valor" id="rCosto">—</div></div>
-      <div class="herr-metrica"><label>Tasa de regalía</label><div class="valor" id="rTasa">—</div></div>
-      <div class="herr-metrica"><label>Regalía por venta</label><div class="valor" id="rRegalia">—</div></div>
-      <div class="herr-metrica"><label>Precio mínimo permitido</label><div class="valor" id="rMinimo">—</div></div>
-    </div>
-    <p class="herr-nota">Estimación basada en las fórmulas públicas de KDP para EE.UU. (2026): tapa blanda B/N = US$0,85 + US$0,012/página; color = US$0,85 + US$0,07/página; regalía 60% del precio si es ≥US$9,99 (50% si es menor). eBook: 70% entre US$2,99–9,99, 35% fuera de ese rango. Los valores reales varían por marketplace y pueden cambiar — confirma siempre en tu panel de KDP antes de publicar.</p>
-    <button class="modal-cerrar" id="cerrarModalRegalias">Cerrar</button>
-  </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js"></script>
+    <div class="servicios" id="servicios">
+      <div class="section-head" style="margin-bottom:20px;">
+        <span class="eyebrow u">Servicios adicionales</span>
+        <h2>Cuando quieres que lo hagamos por ti</h2>
+        <p>Servicios puntuales, con o sin suscripción, hechos por diseñadores y correctores humanos.</p>
+      </div>
+      <div class="servicios-lista">
+        <div class="servicio-item">
+          <div><h4>Diseño de portada profesional</h4><p class="u">Portada hecha por un diseñador, no solo generada por IA. 2 rondas de ajustes incluidas.</p></div>
+          <div class="servicio-precio u">desde €59</div>
+        </div>
+        <div class="servicio-item">
+          <div><h4>Maquetación editorial completa</h4><p class="u">Interior del libro maquetado a mano para tapa blanda y tapa dura, listo para imprimir.</p></div>
+          <div class="servicio-precio u">desde €89</div>
+        </div>
+        <div class="servicio-item">
+          <div><h4>Corrección profesional humana</h4><p class="u">Un corrector de estilo revisa el manuscrito completo tras el paso de la IA.</p></div>
+          <div class="servicio-precio u">desde €0,006 / palabra</div>
+        </div>
+        <div class="servicio-item">
+          <div><h4>Publicación asistida en KDP</h4><p class="u">Te acompañamos en videollamada mientras publicas tu libro en Amazon por primera vez.</p></div>
+          <div class="servicio-precio u">€35 / sesión</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <h2>Tu próximo libro empieza hoy</h2>
+  <p class="u">Únete a la comunidad de Escritores Hispanos y escribe con IA a tu lado, en tu idioma.</p>
+  <a href="director-editorial-app.html" class="btn btn-oro">Crear cuenta gratis</a>
+  <div class="foot-fine">app.escritoreshispanos.com — un producto de escritoreshispanos.com</div>
+</footer>
+
 <script>
-/* =========================================================
-   DIRECTOR EDITORIAL — conectado a IA real (no texto fijo)
-   Cada respuesta viene del modelo, con historial completo de
-   la conversación reenviado en cada llamada para que nunca
-   repita una pregunta ya respondida y mantenga el contexto.
-========================================================= */
+  // Toggle mensual/anual (visual, sin lógica de precio real en el prototipo)
+  document.querySelectorAll('.toggle button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.toggle button').forEach(b=>b.classList.remove('activo'));
+      btn.classList.add('activo');
+    });
+  });
 
-const SYSTEM_PROMPT = `Eres el "Director Editorial" de Escritores Hispanos: un editor literario con décadas de oficio, cercano y agudo, que ayuda a personas hispanohablantes a convertir una idea vaga en un proyecto de libro concreto. Trato de "tú", cálido pero nunca condescendiente — hablas como alguien que ha leído miles de manuscritos y sabe distinguir rápido lo que late de verdad en una historia.
+  /* =========================================================
+     CHAT EN TIEMPO REAL — prototipo de la conversación de onboarding
+     En producción, cada respuesta del asistente vendría de un
+     streaming real contra la API de Claude (Server-Sent Events).
+     Aquí se simula el streaming carácter a carácter para mostrar
+     la experiencia de "tiempo real" tipo ChatGPT/DeepSeek.
+  ========================================================= */
+  const scrollBox = document.getElementById('chatScroll');
+  const input = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('chatSend');
+  let estado = { paso:0, genero:null, etapa:null };
 
-TU CRITERIO EDITORIAL:
-- No eres un formulario disfrazado de conversación. Cuando algo que dice el usuario tiene potencial narrativo real (una imagen fuerte, una contradicción, un detalle concreto), dilo explícitamente y explica en una frase por qué funciona — igual que un editor subrayaría una frase en el margen.
-- Cuando la idea es genérica ("quiero escribir sobre superación"), no la aceptes tal cual: empújala hacia lo concreto y específico con una pregunta que fuerce un detalle real, no una categoría.
-- Adapta tu enfoque al tipo de proyecto: una autobiografía necesita anclarse en hechos, personas y cronología real; una novela necesita conflicto, voz y estructura; un libro de no ficción necesita tesis, audiencia y estructura argumental. No trates todos los géneros igual.
-
-TRAYECTORIA DE PROFUNDIDAD (avanza en este orden, pero con naturalidad, sin que se sienta como cuestionario):
-1. Tema o género general
-2. El conflicto, cambio o tensión central de la historia
-3. Personas involucradas (protagonista, antagonista, personas reales si aplica)
-4. Contexto: cuándo, dónde, qué precede al inicio de la historia
-5. Tono y voz deseados
-6. Un título de trabajo, aunque sea provisional
-
-REGLAS DE CONVERSACIÓN:
-- Haz UNA sola pregunta a la vez, nunca varias juntas.
-- Nunca repitas una pregunta cuyo tema ya fue respondido, aunque la respuesta haya sido corta o ambigua (p. ej. "papa", "mi vida", "la muerte" son respuestas válidas: interprétalas, no las descartes).
-- Si la respuesta del usuario es breve o ambigua, interpreta la intención más probable, dilo explícitamente en tu respuesta, y avanza con la siguiente pregunta relacionada — no pidas que la repita.
-- Sé breve: 2-4 frases por respuesta, como un editor humano en una primera reunión, no un formulario.
-- Cuando ya tengas tema, conflicto, personas, tono y un resumen razonable (progreso >= 70), deja de hacer preguntas de descubrimiento: en su lugar, ofrece explícitamente pasar a escribir la primera escena o el primer capítulo juntos, y pregunta si quiere empezar ahí.
-- Si el usuario ya trae un manuscrito empezado o terminado, no repitas el descubrimiento desde cero: pregunta qué necesita (continuar, corregir, o preparar para publicación) y sigue esa rama.
-
-FORMATO DE SALIDA — CRÍTICO:
-Responde ÚNICAMENTE con un objeto JSON válido, sin backticks, sin markdown, sin texto antes o después. Estructura exacta:
-{
-  "respuesta": "tu respuesta conversacional en español, la que verá el usuario en el chat",
-  "proyecto": {
-    "titulo": "título de trabajo corto para el proyecto, o null si aún no hay suficiente info",
-    "tipo": "ej. Autobiografía, Novela romántica, Thriller, Ensayo, etc. o null",
-    "objetivo": "una frase sobre qué busca lograr el libro, o null",
-    "tono": "ej. Íntimo y humano, Ágil y tenso, etc. o null",
-    "resumen": "1-2 frases resumiendo lo que se sabe del proyecto hasta ahora, o null",
-    "progreso": 0,
-    "personas": [{"nombre":"...", "descripcion":"breve rol de esta persona en la historia"}],
-    "eventos": [{"nombre":"...", "descripcion":"qué ocurrió"}]
-  }
-}
-El campo "progreso" es un número de 0 a 100 que refleja cuánto se conoce del proyecto en total; debe subir de forma acumulativa turno a turno, nunca bajar salvo que el usuario contradiga algo dicho antes. Los arrays "personas" y "eventos" deben ser ACUMULATIVOS: incluye siempre las personas/eventos ya identificados en turnos anteriores más los nuevos, no los reemplaces.`;
-
-let historial = [];
-let estadoProyecto = { titulo:null, tipo:null, objetivo:null, tono:null, resumen:null, progreso:0, personas:[], eventos:[], kdp_checklist:{} };
-let proyectoActualId = null;
-let usuarioActual = null;
-
-// ---- Planes y límites de uso mensual (palabras de IA) ----
-const LIMITES_PLAN = { gratis: 10000, pro: 150000, premium: Infinity };
-const NOMBRES_PLAN = { gratis: 'Gratis', pro: 'Escritor Pro', premium: 'Autor Premium' };
-let estadoUso = { plan: 'gratis', palabras_usadas_mes: 0 };
-
-function contarPalabras(texto){
-  return (texto || '').trim().split(/\s+/).filter(Boolean).length;
-}
-
-function actualizarBarraUso(){
-  const limite = LIMITES_PLAN[estadoUso.plan] ?? LIMITES_PLAN.gratis;
-  const usadas = estadoUso.palabras_usadas_mes || 0;
-  const pct = limite === Infinity ? 8 : Math.min(100, Math.round((usadas / limite) * 100));
-  document.getElementById('usoPlanNombre').textContent = NOMBRES_PLAN[estadoUso.plan] || 'Gratis';
-  document.getElementById('usoFill').style.width = pct + '%';
-  document.getElementById('usoFill').classList.toggle('limite', pct >= 90);
-  document.getElementById('usoTexto').textContent = limite === Infinity
-    ? `${usadas.toLocaleString('es')} palabras usadas este mes · ilimitado`
-    : `${usadas.toLocaleString('es')} / ${limite.toLocaleString('es')} palabras este mes`;
-}
-
-async function cargarUso(){
-  let { data, error } = await sb.from('eh_perfiles').select('plan, palabras_usadas_mes, mes_actual').eq('id', usuarioActual.id).maybeSingle();
-
-  if(!data){
-    // No existe el perfil todavía (cuenta creada antes del trigger, o carrera de tiempos) — lo creamos ahora.
-    const { data: nuevo } = await sb.from('eh_perfiles')
-      .insert({ id: usuarioActual.id, nombre: usuarioActual.email })
-      .select('plan, palabras_usadas_mes, mes_actual')
-      .single();
-    data = nuevo;
+  function addUserMsg(texto){
+    const d = document.createElement('div');
+    d.className = 'msg user';
+    d.textContent = texto;
+    scrollBox.appendChild(d);
+    scrollBox.scrollTop = scrollBox.scrollHeight;
   }
 
-  if(data){
-    const mesHoy = new Date().toISOString().slice(0,7);
-    estadoUso.plan = data.plan || 'gratis';
-    estadoUso.palabras_usadas_mes = (data.mes_actual === mesHoy) ? data.palabras_usadas_mes : 0;
+  function showTyping(){
+    const d = document.createElement('div');
+    d.className = 'typing-dots';
+    d.id = 'typingIndicator';
+    d.innerHTML = '<span></span><span></span><span></span>';
+    scrollBox.appendChild(d);
+    scrollBox.scrollTop = scrollBox.scrollHeight;
   }
 
-  // Si viene de la landing con un plan elegido (ej. director-editorial-app.html?plan=pro),
-  // lo aplicamos una sola vez. En producción, esto pasaría por el checkout de Stripe primero;
-  // aquí lo aplicamos directo para poder probar el flujo completo sin pagos aún.
-  const planUrl = new URLSearchParams(window.location.search).get('plan');
-  if(planUrl && ['gratis','pro','premium'].includes(planUrl) && planUrl !== estadoUso.plan){
-    estadoUso.plan = planUrl;
-    await sb.from('eh_perfiles').update({ plan: planUrl }).eq('id', usuarioActual.id);
+  function removeTyping(){
+    const t = document.getElementById('typingIndicator');
+    if(t) t.remove();
   }
 
-  document.getElementById('selectorPlanPrueba').value = estadoUso.plan;
-  actualizarBarraUso();
-}
-
-document.getElementById('selectorPlanPrueba').addEventListener('change', async (e)=>{
-  const nuevoPlan = e.target.value;
-  estadoUso.plan = nuevoPlan;
-  actualizarBarraUso();
-  if(usuarioActual){
-    await sb.from('eh_perfiles').update({ plan: nuevoPlan }).eq('id', usuarioActual.id);
-  }
-});
-
-async function registrarUso(palabras){
-  estadoUso.palabras_usadas_mes = (estadoUso.palabras_usadas_mes || 0) + palabras;
-  actualizarBarraUso();
-  if(!usuarioActual) return;
-  const { data, error } = await sb.rpc('eh_registrar_uso', { p_usuario: usuarioActual.id, p_palabras: palabras });
-  if(!error && data && data.length){
-    estadoUso.palabras_usadas_mes = data[0].palabras_usadas_mes;
-    estadoUso.plan = data[0].plan;
-    actualizarBarraUso();
-  }
-}
-
-function limiteAlcanzado(){
-  const limite = LIMITES_PLAN[estadoUso.plan] ?? LIMITES_PLAN.gratis;
-  return estadoUso.palabras_usadas_mes >= limite;
-}
-
-// ---- Conexión a Supabase ----
-const SUPABASE_URL = 'https://iyhdldixxpxzhudcswty.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_2cegjLXWyigJF4CDW_4lhA_3UyHbsZ7';
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-const loginOverlay = document.getElementById('loginOverlay');
-const appLayout = document.getElementById('appLayout');
-const loginEmail = document.getElementById('loginEmail');
-const loginBtn = document.getElementById('loginBtn');
-const loginMsg = document.getElementById('loginMsg');
-
-loginBtn.addEventListener('click', async ()=>{
-  const email = loginEmail.value.trim();
-  if(!email){ loginMsg.textContent = 'Escribe tu correo primero.'; return; }
-  loginBtn.disabled = true; loginBtn.textContent = 'Enviando…';
-  const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: window.location.href } });
-  loginBtn.disabled = false; loginBtn.textContent = 'Enviar enlace mágico';
-  loginMsg.style.color = error ? 'var(--vino)' : 'var(--verde)';
-  loginMsg.textContent = error ? ('Error: ' + error.message) : 'Revisa tu correo y haz clic en el enlace para entrar.';
-});
-
-sb.auth.onAuthStateChange((event, session)=>{
-  if(session && session.user){
-    usuarioActual = session.user;
-    loginOverlay.style.display = 'none';
-    appLayout.style.display = 'grid';
-    cargarUso();
-    revisarRegresoDePago();
-    if(historial.length === 0) arrancarSesion();
-  } else {
-    usuarioActual = null;
-    loginOverlay.style.display = 'flex';
-    appLayout.style.display = 'none';
-  }
-});
-
-async function arrancarSesion(){
-  // Busca si el usuario ya tiene proyectos; si tiene, abre el más reciente. Si no, crea uno.
-  const { data: proyectos } = await sb.from('eh_proyectos').select('*').order('updated_at', { ascending:false }).limit(1);
-  if(proyectos && proyectos.length){
-    await abrirProyecto(proyectos[0].id);
-  } else {
-    await crearProyecto();
-  }
-}
-
-async function crearProyecto(){
-  const { data, error } = await sb.from('eh_proyectos').insert({ usuario_id: usuarioActual.id }).select().single();
-  if(error){ console.error(error); addMsg('No se pudo crear el proyecto en la base de datos.', 'error'); return; }
-  proyectoActualId = data.id;
-  historial = [];
-  estadoProyecto = { titulo:null, tipo:null, objetivo:null, tono:null, resumen:null, progreso:0, personas:[], eventos:[], kdp_checklist:{} };
-  chatScroll.innerHTML = '';
-  actualizarPanel({});
-  iniciar();
-}
-
-async function abrirProyecto(id){
-  proyectoActualId = id;
-  const { data: proyecto } = await sb.from('eh_proyectos').select('*').eq('id', id).single();
-  const { data: mensajes } = await sb.from('eh_mensajes').select('*').eq('proyecto_id', id).order('created_at', { ascending:true });
-
-  chatScroll.innerHTML = '';
-  historial = [];
-  if(mensajes && mensajes.length){
-    mensajes.forEach(m=>{
-      if(m.role === 'user'){
-        addMsg(m.content, 'user');
-        historial.push({ role:'user', content: m.content });
-      } else {
-        try{
-          const parsed = JSON.parse(m.content);
-          addMsg(parsed.respuesta, 'bot');
-        } catch(e){ addMsg(m.content, 'bot'); }
-        historial.push({ role:'assistant', content: m.content });
+  function streamBotMsg(texto, onDone){
+    const d = document.createElement('div');
+    d.className = 'msg bot';
+    const span = document.createElement('span');
+    const cursor = document.createElement('span');
+    cursor.className = 'cursor-typing';
+    d.appendChild(span);
+    d.appendChild(cursor);
+    scrollBox.appendChild(d);
+    let i = 0;
+    const velocidad = 14; // ms por carácter, simula streaming real
+    const intervalo = setInterval(()=>{
+      span.textContent += texto[i];
+      i++;
+      scrollBox.scrollTop = scrollBox.scrollHeight;
+      if(i >= texto.length){
+        clearInterval(intervalo);
+        cursor.remove();
+        if(onDone) onDone();
       }
-    });
-  } else {
-    iniciar();
-  }
-  actualizarPanel({
-    titulo: proyecto.titulo, tipo: proyecto.tipo, objetivo: proyecto.objetivo, tono: proyecto.tono,
-    resumen: proyecto.resumen, progreso: proyecto.progreso, personas: proyecto.personas || [], eventos: proyecto.eventos || [],
-    kdp_checklist: proyecto.kdp_checklist || {}
-  });
-}
-
-async function guardarMensaje(role, content){
-  if(!proyectoActualId) return;
-  await sb.from('eh_mensajes').insert({ proyecto_id: proyectoActualId, role, content });
-}
-
-async function guardarProyecto(p){
-  if(!proyectoActualId) return;
-  await sb.from('eh_proyectos').update({
-    titulo: p.titulo, tipo: p.tipo, objetivo: p.objetivo, tono: p.tono, resumen: p.resumen,
-    progreso: p.progreso, personas: p.personas, eventos: p.eventos, updated_at: new Date().toISOString()
-  }).eq('id', proyectoActualId);
-}
-
-async function abrirModalLibros(){
-  const { data } = await sb.from('eh_proyectos').select('*').order('updated_at', { ascending:false });
-  const lista = document.getElementById('listaLibros');
-  lista.innerHTML = (data && data.length)
-    ? data.map(p=>`<div class="libro-item" data-id="${p.id}"><b>${p.titulo || 'Sin título aún'}</b><span>${p.tipo || 'Proyecto nuevo'} · ${p.progreso||0}% identificado</span></div>`).join('')
-    : '<div class="vacio">Todavía no tienes libros. Crea uno con "+ Nuevo libro".</div>';
-  lista.querySelectorAll('.libro-item').forEach(el=>{
-    el.addEventListener('click', async ()=>{
-      document.getElementById('modalLibros').style.display = 'none';
-      await abrirProyecto(el.dataset.id);
-    });
-  });
-  document.getElementById('modalLibros').style.display = 'flex';
-}
-document.querySelectorAll('.nav-item[title]')[0].addEventListener('click', abrirModalLibros); // "Mis libros"
-document.getElementById('cerrarModal').addEventListener('click', ()=> document.getElementById('modalLibros').style.display = 'none');
-
-// ---- Checklist de publicación en Amazon KDP ----
-const KDP_CHECKLIST = [
-  { categoria: 'Manuscrito', items: [
-    { id:'ms_1', texto:'Manuscrito editado y con corrección final' },
-    { id:'ms_2', texto:'Formato correcto (Word, EPUB o PDF según el tipo de tapa)' },
-    { id:'ms_3', texto:'Márgenes, sangrado y tamaño de página configurados' },
-  ]},
-  { categoria: 'Portada', items: [
-    { id:'pt_1', texto:'Portada en las medidas exactas para tu tipo de tapa' },
-    { id:'pt_2', texto:'Contraportada y lomo calculados (tapa blanda o dura)' },
-    { id:'pt_3', texto:'Resolución mínima de 300 DPI' },
-  ]},
-  { categoria: 'Metadatos', items: [
-    { id:'md_1', texto:'Título y subtítulo definidos' },
-    { id:'md_2', texto:'Descripción de venta (sinopsis) redactada' },
-    { id:'md_3', texto:'Categorías de Amazon elegidas (hasta 3)' },
-    { id:'md_4', texto:'7 palabras clave de búsqueda definidas' },
-  ]},
-  { categoria: 'Publicación', items: [
-    { id:'pb_1', texto:'Cuenta de KDP creada y verificada' },
-    { id:'pb_2', texto:'Información fiscal completada (W-8BEN u otra)' },
-    { id:'pb_3', texto:'Precio y regalías definidos' },
-    { id:'pb_4', texto:'Revisión final en el previsualizador de KDP' },
-  ]},
-];
-
-function renderKdp(){
-  const guardado = estadoProyecto.kdp_checklist || {};
-  const lista = document.getElementById('listaKdp');
-  lista.innerHTML = KDP_CHECKLIST.map(cat => `
-    <div class="kdp-categoria">
-      <h4>${cat.categoria}</h4>
-      ${cat.categoria === 'Metadatos' ? `
-        <button class="herr-btn" id="btnGenerarMetadatos" style="margin-bottom:12px; font-size:0.78rem; padding:8px 14px;">✨ Generar con IA (a partir de tu proyecto)</button>
-        <div id="metadatosResultado"></div>
-      ` : ''}
-      ${cat.items.map(it => `
-        <label class="kdp-item">
-          <input type="checkbox" data-id="${it.id}" ${guardado[it.id] ? 'checked' : ''}>
-          <span class="${guardado[it.id] ? 'hecho' : ''}">${it.texto}</span>
-        </label>
-      `).join('')}
-    </div>
-  `).join('');
-
-  lista.querySelectorAll('input[type=checkbox]').forEach(cb=>{
-    cb.addEventListener('change', async ()=>{
-      const actual = estadoProyecto.kdp_checklist || {};
-      actual[cb.dataset.id] = cb.checked;
-      estadoProyecto.kdp_checklist = actual;
-      cb.nextElementSibling.classList.toggle('hecho', cb.checked);
-      actualizarProgresoKdp();
-      if(proyectoActualId){
-        await sb.from('eh_proyectos').update({ kdp_checklist: actual }).eq('id', proyectoActualId);
-      }
-    });
-  });
-  actualizarProgresoKdp();
-
-  document.getElementById('btnGenerarMetadatos').addEventListener('click', generarMetadatos);
-}
-
-async function generarMetadatos(){
-  const btn = document.getElementById('btnGenerarMetadatos');
-  const resultado = document.getElementById('metadatosResultado');
-  btn.disabled = true; btn.textContent = 'Generando…';
-  resultado.innerHTML = '';
-
-  const promptSistema = `Eres un experto en metadatos de Amazon KDP para el mercado hispanohablante. A partir del contexto de un proyecto de libro, genera metadatos de venta optimizados. Responde ÚNICAMENTE con JSON válido, sin backticks ni texto extra, con esta forma exacta:
-{
-  "titulos": ["opción 1", "opción 2", "opción 3"],
-  "subtitulo": "un subtítulo sugerido",
-  "sinopsis": "descripción de venta de 100-150 palabras, con gancho, en español, sin spoilers del final",
-  "categorias": ["categoría Amazon 1", "categoría Amazon 2", "categoría Amazon 3"],
-  "palabras_clave": ["kw1","kw2","kw3","kw4","kw5","kw6","kw7"]
-}`;
-  const contexto = `Tipo: ${estadoProyecto.tipo || 'no definido'}. Objetivo: ${estadoProyecto.objetivo || 'no definido'}. Tono: ${estadoProyecto.tono || 'no definido'}. Resumen: ${estadoProyecto.resumen || 'no definido'}. Título de trabajo actual: ${estadoProyecto.titulo || 'ninguno'}.`;
-
-  try{
-    const response = await fetch("http://localhost:3001/api/chat", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ system: promptSistema, messages: [{ role:'user', content: contexto }] })
-    });
-    const data = await response.json();
-    const textoCrudo = (data.content || []).map(b => b.text || '').join('').replace(/```json|```/g, '').trim();
-    const md = JSON.parse(textoCrudo);
-
-    resultado.innerHTML = `
-      <div class="herr-resultado" style="white-space:normal;">
-        <div class="metadato-bloque"><h5>Títulos sugeridos</h5><ul>${md.titulos.map(t=>`<li>${t}</li>`).join('')}</ul></div>
-        <div class="metadato-bloque"><h5>Subtítulo</h5><p>${md.subtitulo}</p></div>
-        <div class="metadato-bloque"><h5>Sinopsis de venta</h5><p>${md.sinopsis}</p></div>
-        <div class="metadato-bloque"><h5>Categorías sugeridas</h5><ul>${md.categorias.map(c=>`<li>${c}</li>`).join('')}</ul></div>
-        <div class="metadato-bloque"><h5>Palabras clave</h5><p>${md.palabras_clave.join(' · ')}</p></div>
-        <button class="copiar-btn" id="btnCopiarMetadatos">Copiar todo</button>
-      </div>`;
-    document.getElementById('btnCopiarMetadatos').addEventListener('click', ()=>{
-      const texto = `TÍTULOS:\n${md.titulos.join('\n')}\n\nSUBTÍTULO:\n${md.subtitulo}\n\nSINOPSIS:\n${md.sinopsis}\n\nCATEGORÍAS:\n${md.categorias.join('\n')}\n\nPALABRAS CLAVE:\n${md.palabras_clave.join(', ')}`;
-      navigator.clipboard.writeText(texto);
-      document.getElementById('btnCopiarMetadatos').textContent = '¡Copiado!';
-    });
-  } catch(err){
-    resultado.innerHTML = `<div class="herr-resultado">No se pudo generar. Asegúrate de tener suficiente información del proyecto (habla primero con el Director Editorial) e intenta de nuevo.</div>`;
-    console.error(err);
-  } finally {
-    btn.disabled = false; btn.textContent = '✨ Generar con IA (a partir de tu proyecto)';
-  }
-}
-
-function actualizarProgresoKdp(){
-  const guardado = estadoProyecto.kdp_checklist || {};
-  const total = KDP_CHECKLIST.reduce((n, c) => n + c.items.length, 0);
-  const hechos = Object.values(guardado).filter(Boolean).length;
-  const pct = total ? Math.round((hechos / total) * 100) : 0;
-  document.getElementById('kdpFill').style.width = pct + '%';
-  document.getElementById('kdpPct').textContent = pct + '%';
-}
-
-document.getElementById('navKdp').addEventListener('click', ()=>{
-  renderKdp();
-  document.getElementById('modalKdp').style.display = 'flex';
-});
-document.getElementById('cerrarModalKdp').addEventListener('click', ()=> document.getElementById('modalKdp').style.display = 'none');
-
-// ---- Editor inteligente: corrección de manuscrito ----
-document.getElementById('navEditor').addEventListener('click', ()=>{
-  document.getElementById('modalEditor').style.display = 'flex';
-});
-document.getElementById('cerrarModalEditor').addEventListener('click', ()=> document.getElementById('modalEditor').style.display = 'none');
-
-// ---- Traducción literaria ----
-document.getElementById('navTraduccion').addEventListener('click', ()=>{
-  document.getElementById('modalTraduccion').style.display = 'flex';
-});
-document.getElementById('cerrarModalTraduccion').addEventListener('click', ()=> document.getElementById('modalTraduccion').style.display = 'none');
-
-document.getElementById('btnTraducir').addEventListener('click', async ()=>{
-  const texto = document.getElementById('traduccionInput').value.trim();
-  const idioma = document.getElementById('idiomaDestino').value;
-  const resultado = document.getElementById('traduccionResultado');
-  const btn = document.getElementById('btnTraducir');
-  if(!texto) return;
-  if(limiteAlcanzado()){
-    resultado.innerHTML = `<div class="herr-resultado">Llegaste al límite de tu plan este mes. <a href="escritores-hispanos-app-mockup.html#precios" target="_blank">Mejora tu plan →</a></div>`;
-    return;
+    }, velocidad);
   }
 
-  btn.disabled = true; btn.textContent = 'Traduciendo…';
-  resultado.innerHTML = `<div class="herr-resultado">Traduciendo con cuidado del tono original…</div>`;
-
-  const promptTraductor = `Eres un traductor literario profesional, especializado en traducir del español al ${idioma}. No hagas una traducción palabra por palabra: preserva el tono, el ritmo narrativo, los matices emocionales y las expresiones idiomáticas, adaptándolas de forma natural al ${idioma} como lo haría un traductor editorial humano. Mantén los nombres propios tal cual, salvo que tengan una forma estándar conocida en ${idioma}. Devuelve ÚNICAMENTE el texto traducido, en texto plano, sin comentarios, sin notas, sin explicar tus decisiones.`;
-
-  try{
-    const response = await fetch("http://localhost:3001/api/chat", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ system: promptTraductor, messages: [{ role:'user', content: texto }] })
+  function addChips(opciones, callback){
+    const cont = document.createElement('div');
+    cont.className = 'quick-replies';
+    opciones.forEach(op=>{
+      const b = document.createElement('button');
+      b.className = 'chip-reply';
+      b.textContent = op;
+      b.onclick = ()=>{
+        cont.remove();
+        addUserMsg(op);
+        callback(op);
+      };
+      cont.appendChild(b);
     });
-    const data = await response.json();
-    const traduccion = (data.content || []).map(b => b.text || '').join('');
-    resultado.innerHTML = `<div class="herr-resultado">${traduccion.replace(/</g,'&lt;')}</div><button class="copiar-btn" id="btnCopiarTraduccion">Copiar traducción</button>`;
-    document.getElementById('btnCopiarTraduccion').addEventListener('click', ()=>{
-      navigator.clipboard.writeText(traduccion);
-      document.getElementById('btnCopiarTraduccion').textContent = '¡Copiado!';
-    });
-    registrarUso(contarPalabras(texto) + contarPalabras(traduccion));
-  } catch(err){
-    resultado.innerHTML = `<div class="herr-resultado">No pude conectar con el traductor. Revisa que el backend siga corriendo e intenta de nuevo.</div>`;
-    console.error(err);
-  } finally {
-    btn.disabled = false; btn.textContent = 'Traducir con IA';
-  }
-});
-
-document.getElementById('btnCorregir').addEventListener('click', async ()=>{
-  const texto = document.getElementById('editorInput').value.trim();
-  const resultado = document.getElementById('editorResultado');
-  const btn = document.getElementById('btnCorregir');
-  if(!texto){ return; }
-  if(limiteAlcanzado()){
-    resultado.innerHTML = `<div class="herr-resultado">Llegaste al límite de tu plan este mes. <a href="escritores-hispanos-app-mockup.html#precios" target="_blank">Mejora tu plan →</a></div>`;
-    return;
+    scrollBox.appendChild(cont);
+    scrollBox.scrollTop = scrollBox.scrollHeight;
   }
 
-  btn.disabled = true; btn.textContent = 'Corrigiendo…';
-  resultado.innerHTML = `<div class="herr-resultado">Leyendo tu texto con calma…</div>`;
-
-  const promptCorrector = `Eres un corrector gramatical y ortográfico profesional en español. Tu función principal es la corrección gramatical, no la crítica literaria. Recibirás un fragmento de manuscrito. Responde en texto plano (sin JSON, sin markdown) con EXACTAMENTE estas dos secciones, en este orden:
-
-=== COMENTARIOS ===
-1. Errores de ortografía, tildes, puntuación y concordancia gramatical — cita la frase exacta (máximo 15 palabras por cita) y la corrección. Esta es tu tarea principal: sé exhaustivo aquí.
-2. Como nota secundaria y breve (máximo 2 líneas), si hay repeticiones de palabras muy evidentes, menciónalas — pero no hagas crítica de estilo o narrativa, para eso está el Director Editorial en la conversación principal.
-
-=== TEXTO CORREGIDO ===
-El texto completo del fragmento, con la gramática, ortografía y puntuación ya corregidas, listo para reemplazar el original. Mantén la voz y las decisiones de estilo del autor tal cual — no reescribas su forma de contar, solo corrige lo gramaticalmente incorrecto. Debe tener aproximadamente la misma extensión que el original.`;
-
-  try{
-    const response = await fetch("http://localhost:3001/api/chat", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ system: promptCorrector, messages: [{ role:'user', content: texto }] })
-    });
-    const data = await response.json();
-    const textoRespuesta = (data.content || []).map(b => b.text || '').join('');
-    resultado.innerHTML = `<div class="herr-resultado">${textoRespuesta.replace(/</g,'&lt;')}</div><button class="copiar-btn" id="btnCopiarCorregido">Copiar solo el texto corregido</button>`;
-
-    document.getElementById('btnCopiarCorregido').addEventListener('click', ()=>{
-      const marcador = '=== TEXTO CORREGIDO ===';
-      const idx = textoRespuesta.indexOf(marcador);
-      const soloCorregido = idx >= 0 ? textoRespuesta.slice(idx + marcador.length).trim() : textoRespuesta;
-      navigator.clipboard.writeText(soloCorregido);
-      document.getElementById('btnCopiarCorregido').textContent = '¡Copiado! Pégalo en "Formatear manuscrito"';
-    });
-
-    registrarUso(contarPalabras(texto) + contarPalabras(textoRespuesta));
-  } catch(err){
-    resultado.innerHTML = `<div class="herr-resultado">No pude conectar con el corrector. Revisa que el backend siga corriendo e intenta de nuevo.</div>`;
-    console.error(err);
-  } finally {
-    btn.disabled = false; btn.textContent = 'Corregir con IA';
-  }
-});
-
-// ---- Calculadora de portada KDP (medidas exactas + 300 DPI) ----
-document.getElementById('navPortada').addEventListener('click', ()=>{
-  document.getElementById('modalPortada').style.display = 'flex';
-});
-document.getElementById('cerrarModalPortada').addEventListener('click', ()=> document.getElementById('modalPortada').style.display = 'none');
-
-document.getElementById('navPortadaIA').addEventListener('click', ()=>{
-  document.getElementById('modalPortadaIA').style.display = 'flex';
-});
-document.getElementById('cerrarModalPortadaIA').addEventListener('click', ()=> document.getElementById('modalPortadaIA').style.display = 'none');
-
-document.getElementById('btnSugerirPrompt').addEventListener('click', async ()=>{
-  const btn = document.getElementById('btnSugerirPrompt');
-  btn.disabled = true; btn.textContent = 'Pensando…';
-  const promptSistema = `Eres un director de arte de portadas editoriales. A partir del contexto de un proyecto de libro, escribe UNA sola descripción visual concreta y evocadora para generar la ilustración de portada (sin texto, sin título dentro de la imagen). Responde solo con la descripción, en español, 2-3 frases, muy visual y específica (colores, composición, atmósfera, elementos concretos) — nada de metáforas abstractas que una IA de imágenes no pueda dibujar.`;
-  const contexto = `Tipo: ${estadoProyecto.tipo || 'no definido'}. Tono: ${estadoProyecto.tono || 'no definido'}. Resumen: ${estadoProyecto.resumen || 'no definido'}.`;
-  try{
-    const response = await fetch("http://localhost:3001/api/chat", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ system: promptSistema, messages: [{ role:'user', content: contexto }] })
-    });
-    const data = await response.json();
-    const sugerencia = (data.content || []).map(b => b.text || '').join('');
-    document.getElementById('portadaPrompt').value = sugerencia;
-  } catch(err){
-    alert('No pude conectar para sugerir la descripción. Escríbela manualmente.');
-  } finally {
-    btn.disabled = false; btn.textContent = '✨ Sugerir a partir de mi proyecto';
-  }
-});
-
-document.getElementById('btnGenerarPortada').addEventListener('click', async ()=>{
-  const descripcion = document.getElementById('portadaPrompt').value.trim();
-  const estilo = document.getElementById('estiloPortada').value;
-  const resultado = document.getElementById('portadaIaResultado');
-  const btn = document.getElementById('btnGenerarPortada');
-  if(!descripcion){ alert('Describe la escena o imagen primero.'); return; }
-
-  if(estadoUso.plan === 'gratis'){
-    resultado.innerHTML = `<div class="herr-resultado">La generación de portadas con IA es una función de los planes Pro y Premium. <a href="escritores-hispanos-app-mockup.html#precios" target="_blank">Mejora tu plan →</a></div>`;
-    return;
+  function botDice(texto, delay, onDone){
+    showTyping();
+    setTimeout(()=>{
+      removeTyping();
+      streamBotMsg(texto, onDone);
+    }, delay);
   }
 
-  btn.disabled = true; btn.textContent = 'Generando… (puede tardar ~20s)';
-  resultado.innerHTML = `<div class="herr-resultado">Generando tu portada…</div>`;
-
-  const promptFinal = `Portada de libro, sin texto ni letras ni títulos en la imagen, sin marcos ni bordes: ${descripcion}. Estilo: ${estilo}. Composición vertical centrada, espacio despejado en la parte superior e inferior para poder agregar texto de título y autor después. Alta calidad, digna de imprenta.`;
-
-  try{
-    const response = await fetch("http://localhost:3001/api/imagen", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt: promptFinal, size: '1024x1536' })
+  // ---- Flujo guiado de descubrimiento ----
+  function iniciarConversacion(){
+    botDice('¡Hola! Soy tu asistente de escritura. Antes de empezar, cuéntame: ¿en qué punto estás con tu libro?', 500, ()=>{
+      addChips(['Tengo solo una idea suelta', 'Ya empecé a escribir', 'Tengo el manuscrito terminado'], respuestaEtapa);
     });
-    const data = await response.json();
-    if(!response.ok){ throw new Error(data.error?.error?.message || data.error || 'Error desconocido'); }
-
-    const b64 = data.data[0].b64_json;
-    resultado.innerHTML = `
-      <img src="data:image/png;base64,${b64}" style="width:100%; max-width:320px; border-radius:6px; border:1px solid var(--linea); margin-top:12px; display:block;">
-      <button class="copiar-btn" id="btnDescargarPortada" style="margin-top:10px;">⬇️ Descargar imagen</button>
-      <p class="herr-nota">Esta imagen sale a 1024×1536 px — para imprenta necesitas las medidas exactas que calculaste en la pestaña "Medidas exactas" (con sangrado y lomo). Ábrela en Canva o Photoshop, ajusta el lienzo a esas medidas y agrega ahí el título, tu nombre y (si aplica) la contraportada.</p>
-    `;
-    document.getElementById('btnDescargarPortada').addEventListener('click', ()=>{
-      const a = document.createElement('a');
-      a.href = `data:image/png;base64,${b64}`;
-      a.download = 'portada-generada.png';
-      a.click();
-    });
-  } catch(err){
-    resultado.innerHTML = `<div class="herr-resultado">No se pudo generar la imagen: ${err.message}. Revisa que OPENAI_API_KEY esté puesta en la terminal del backend y que tengas crédito en tu cuenta de OpenAI.</div>`;
-    console.error(err);
-  } finally {
-    btn.disabled = false; btn.textContent = '🎨 Generar portada';
   }
-});
 
-document.getElementById('btnCalcularPortada').addEventListener('click', ()=>{
-  const trim = document.getElementById('trimSize').value;
-  const [anchoTrim, altoTrim] = trim.split('x').map(Number);
-  const paginas = Math.max(24, parseInt(document.getElementById('numPaginas').value) || 24);
-  const papel = document.getElementById('tipoPapel').value;
-
-  const factorLomo = papel === 'crema' ? 0.0025 : 0.002252;
-  const lomo = +(paginas * factorLomo).toFixed(3);
-  const sangrado = 0.125;
-  const anchoTotal = +((anchoTrim * 2) + lomo + (sangrado * 2)).toFixed(3);
-  const altoTotal = +(altoTrim + (sangrado * 2)).toFixed(3);
-  const DPI = 300;
-
-  document.getElementById('portadaResultado').innerHTML = `
-    <div class="herr-metricas">
-      <div class="herr-metrica"><label>Ancho total de portada</label><div class="valor">${anchoTotal}"</div></div>
-      <div class="herr-metrica"><label>Alto total de portada</label><div class="valor">${altoTotal}"</div></div>
-      <div class="herr-metrica"><label>Ancho del lomo</label><div class="valor">${lomo}"</div></div>
-      <div class="herr-metrica"><label>Resolución para imprenta</label><div class="valor">${DPI} DPI</div></div>
-      <div class="herr-metrica"><label>Ancho total en píxeles</label><div class="valor">${Math.round(anchoTotal*DPI)} px</div></div>
-      <div class="herr-metrica"><label>Alto total en píxeles</label><div class="valor">${Math.round(altoTotal*DPI)} px</div></div>
-    </div>
-    <p class="herr-nota">Portada + lomo + contraportada en una sola pieza, con 0,125" de sangrado en los 3 bordes exteriores (no hay sangrado contra el lomo). Fórmula de lomo: ${papel === 'crema' ? '0,0025' : '0,002252'} × ${paginas} páginas. Usa estas medidas como lienzo en Canva, Photoshop o Illustrator antes de subir tu portada a KDP.</p>
-  `;
-});
-
-// ---- Calculadora de precio y regalías ----
-document.getElementById('navRegalias').addEventListener('click', ()=>{
-  document.getElementById('modalRegalias').style.display = 'flex';
-});
-document.getElementById('cerrarModalRegalias').addEventListener('click', ()=> document.getElementById('modalRegalias').style.display = 'none');
-
-// ---- Mejorar plan: checkout real con Stripe ----
-const PRICE_IDS = {
-  pro: 'price_1TuXic9b14qHwYfsJksrA3O3',
-  premium: 'price_1TuXkQ9b14qHwYfsfzisZleD'
-};
-
-document.getElementById('btnAbrirMejorarPlan').addEventListener('click', (e)=>{
-  e.preventDefault();
-  document.getElementById('modalMejorarPlan').style.display = 'flex';
-});
-document.getElementById('cerrarModalMejorarPlan').addEventListener('click', ()=> document.getElementById('modalMejorarPlan').style.display = 'none');
-
-document.querySelectorAll('[data-price-plan]').forEach(btn=>{
-  btn.addEventListener('click', async ()=>{
-    const plan = btn.dataset.pricePlan;
-    const estado = document.getElementById('mejorarPlanEstado');
-    btn.disabled = true; btn.textContent = 'Redirigiendo…';
-    estado.textContent = '';
-    try{
-      const response = await fetch('http://localhost:3001/api/crear-checkout', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          priceId: PRICE_IDS[plan],
-          plan,
-          usuarioId: usuarioActual.id,
-          email: usuarioActual.email,
-          returnUrl: window.location.origin + window.location.pathname
-        })
+  function respuestaEtapa(op){
+    estado.etapa = op;
+    if(op === 'Tengo solo una idea suelta'){
+      botDice('Perfecto, empezamos desde cero — es mi parte favorita. ¿Qué género te imaginas para esta historia?', 700, ()=>{
+        addChips(['Novela romántica', 'Thriller / suspenso', 'Fantasía', 'No estoy seguro, ayúdame a decidir'], respuestaGenero);
       });
-      const data = await response.json();
-      if(!response.ok || !data.url) throw new Error(data.error || 'No se pudo iniciar el pago.');
-      window.location.href = data.url;
-    } catch(err){
-      estado.textContent = 'No se pudo iniciar el pago: ' + err.message;
-      btn.disabled = false; btn.textContent = 'Suscribirme';
+    } else if(op === 'Ya empecé a escribir'){
+      botDice('Genial, ya tienes tracción. ¿Qué necesitas más ahora mismo: seguir escribiendo o corregir lo que ya tienes?', 700, ()=>{
+        addChips(['Seguir escribiendo', 'Corregir y mejorar el estilo'], (r)=>{
+          botDice('Entendido. Sube tu manuscrito o pégalo aquí y en segundos tendrás sugerencias en el margen, como un editor real revisando tus páginas.', 900, finalCTA);
+        });
+      });
+    } else {
+      botDice('¡Felicidades por terminarlo! Ahora viene la parte de convertirlo en un libro real: maquetación, portada y el checklist de publicación en Amazon KDP. ¿Por dónde quieres empezar?', 800, ()=>{
+        addChips(['Diseñar la portada', 'Maquetar el interior', 'Preparar todo para KDP'], (r)=>{
+          botDice('Perfecto, vamos a esa sección ahora. Solo necesito la sinopsis o el archivo del manuscrito para empezar.', 900, finalCTA);
+        });
+      });
+    }
+  }
+
+  function respuestaGenero(op){
+    estado.genero = op;
+    const nota = op === 'No estoy seguro, ayúdame a decidir'
+      ? 'Sin problema, te haré tres preguntas cortas sobre qué te gusta leer y de ahí te propongo 3 premisas posibles.'
+      : `Buena elección. El ${op.toLowerCase()} tiene buen momento ahora mismo en el mercado hispano de Amazon KDP.`;
+    botDice(nota + ' Ahora dime en una frase: ¿de qué trata (o podría tratar) tu historia?', 800, ()=>{
+      input.placeholder = 'Ej: Una mujer regresa a su pueblo natal y descubre un secreto familiar…';
+      input.focus();
+    });
+  }
+
+  function finalCTA(){
+    setTimeout(()=>{
+      const d = document.createElement('div');
+      d.className = 'msg bot';
+      d.innerHTML = 'Ya tengo suficiente para armar tu plan de trabajo personalizado. <br><br><a href="#precios" class="btn btn-oro u" style="margin-top:8px;">Ver mi plan de escritura →</a>';
+      scrollBox.appendChild(d);
+      scrollBox.scrollTop = scrollBox.scrollHeight;
+    }, 300);
+  }
+
+  // ---- Entrada libre de texto (respuesta genérica con contexto, simulando IA real) ----
+  function manejarTextoLibre(texto){
+    addUserMsg(texto);
+    const t = texto.toLowerCase();
+    let respuesta;
+    if(t.includes('portada')) respuesta = 'Puedo generar varias propuestas de portada a partir de tu sinopsis y género. Cuando estés en tu cuenta, esto se conecta directo con el generador de portadas — ¿quieres que te muestre un ejemplo en la sección de precios?';
+    else if(t.includes('corri') || t.includes('corregir') || t.includes('error')) respuesta = 'Pega el texto que quieras corregir y te devuelvo un análisis con marcas en el margen, igual que un corrector humano: ortografía, ritmo y repeticiones.';
+    else if(t.includes('kdp') || t.includes('amazon') || t.includes('publicar')) respuesta = 'Para publicar en KDP necesitas: manuscrito maquetado, portada en las medidas exactas, sinopsis y palabras clave. Te lo preparo todo y te guío paso a paso en el checklist final.';
+    else respuesta = 'Entiendo. Cuéntame un poco más — ¿es una historia nueva, algo que ya tienes escrito, o necesitas ayuda con la publicación? Así te llevo directo a la parte que te sirve.';
+    botDice(respuesta, 500);
+  }
+
+  sendBtn.addEventListener('click', ()=>{
+    const val = input.value.trim();
+    if(!val) return;
+    manejarTextoLibre(val);
+    input.value = '';
+  });
+  input.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter'){
+      const val = input.value.trim();
+      if(!val) return;
+      manejarTextoLibre(val);
+      input.value = '';
     }
   });
-});
 
-async function revisarRegresoDePago(){
-  const params = new URLSearchParams(window.location.search);
-  const pago = params.get('pago');
-  const sessionId = params.get('session_id');
-  if(pago === 'exito' && sessionId){
-    try{
-      const response = await fetch(`http://localhost:3001/api/verificar-pago?session_id=${sessionId}`);
-      const data = await response.json();
-      if(data.ok){
-        estadoUso.plan = data.plan;
-        actualizarBarraUso();
-        alert('¡Pago exitoso! Tu plan ahora es ' + NOMBRES_PLAN[data.plan] + '.');
-      }
-    } catch(err){ console.error('Error verificando pago:', err); }
-    window.history.replaceState({}, '', window.location.pathname);
-  } else if(pago === 'cancelado'){
-    window.history.replaceState({}, '', window.location.pathname);
-  }
-}
-
-// ---- Formatear manuscrito: márgenes oficiales KDP + PDF + Word ----
-document.getElementById('navFormato').addEventListener('click', ()=>{
-  document.getElementById('modalFormato').style.display = 'flex';
-});
-document.getElementById('cerrarModalFormato').addEventListener('click', ()=> document.getElementById('modalFormato').style.display = 'none');
-
-function gutterPorPaginas(paginas){
-  if(paginas <= 150) return 0.375;
-  if(paginas <= 300) return 0.5;
-  if(paginas <= 500) return 0.625;
-  if(paginas <= 700) return 0.75;
-  return 0.875;
-}
-
-let margenesCalculados = null;
-
-document.getElementById('btnCalcularMargenes').addEventListener('click', ()=>{
-  const trim = document.getElementById('formatoTrim').value;
-  const [anchoTrim, altoTrim] = trim.split('x').map(Number);
-  const paginas = Math.max(24, parseInt(document.getElementById('formatoPaginas').value) || 24);
-  const conSangrado = document.getElementById('formatoSangrado').value === 'si';
-
-  const gutter = gutterPorPaginas(paginas);
-  const externo = conSangrado ? 0.375 : 0.25;
-  const anchoPagina = +(anchoTrim + (conSangrado ? 0.125 : 0)).toFixed(3);
-  const altoPagina = +(altoTrim + (conSangrado ? 0.25 : 0)).toFixed(3);
-
-  margenesCalculados = { anchoTrim, altoTrim, paginas, conSangrado, gutter, externo, anchoPagina, altoPagina };
-
-  document.getElementById('margenesResultado').innerHTML = `
-    <div class="herr-metricas">
-      <div class="herr-metrica"><label>Tamaño de página final</label><div class="valor">${anchoPagina}" × ${altoPagina}"</div></div>
-      <div class="herr-metrica"><label>Margen interior (lomo)</label><div class="valor">${gutter}"</div></div>
-      <div class="herr-metrica"><label>Margen exterior/sup./inf.</label><div class="valor">${externo}"</div></div>
-      <div class="herr-metrica"><label>Sangrado</label><div class="valor">${conSangrado ? '0.125" activo' : 'Sin sangrado'}</div></div>
-    </div>
-    <p class="herr-nota">Según la tabla oficial de KDP: el margen interior crece con el número de páginas (0.375" hasta 150 págs., 0.5" hasta 300, 0.625" hasta 500, 0.75" hasta 700, 0.875" hasta 828). Estos son mínimos — Amazon los exige tal cual o tu archivo puede ser rechazado.</p>
-  `;
-  document.getElementById('formatoAcciones').style.display = 'flex';
-});
-
-function prepararParrafos(){
-  const texto = document.getElementById('formatoInput').value.trim();
-  if(!texto) return null;
-  const bloques = texto.split(/\n\s*\n/);
-  return bloques.map(b => {
-    const esCapitulo = /^(cap[ií]tulo|###)/i.test(b.trim());
-    return { texto: b.trim().replace(/^###\s*/,''), esCapitulo };
-  });
-}
-
-// --- Vista previa e impresión a PDF (usa @page real del navegador) ---
-document.getElementById('btnVistaImpresion').addEventListener('click', ()=>{
-  if(!margenesCalculados){ return; }
-  const parrafos = prepararParrafos();
-  if(!parrafos){ alert('Pega tu manuscrito arriba antes de generar la vista previa.'); return; }
-  const fuente = document.getElementById('formatoFuente').value;
-  const m = margenesCalculados;
-
-  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Vista de impresión</title>
-  <style>
-    @page { size: ${m.anchoPagina}in ${m.altoPagina}in; margin-top: ${m.externo}in; margin-bottom: ${m.externo}in; }
-    @page :left { margin-left: ${m.externo}in; margin-right: ${m.gutter}in; }
-    @page :right { margin-left: ${m.gutter}in; margin-right: ${m.externo}in; }
-    body{ font-family: '${fuente}', Georgia, serif; font-size: 11.5pt; line-height: 1.5; color:#111; }
-    p{ margin: 0 0 0.9em 0; text-align: justify; }
-    .capitulo{ page-break-before: always; font-size: 1.4em; font-weight: bold; margin: 0 0 1.2em 0; text-align:center; }
-    .capitulo:first-child{ page-break-before: avoid; }
-  </style></head><body>
-    ${parrafos.map(p => p.esCapitulo ? `<p class="capitulo">${p.texto}</p>` : `<p>${p.texto}</p>`).join('\n')}
-  </body></html>`;
-
-  const ventana = window.open('', '_blank');
-  ventana.document.open();
-  ventana.document.write(html);
-  ventana.document.close();
-  ventana.onload = () => ventana.print();
-});
-
-// --- Descargar como Word (.docx) real, con tamaño de página y márgenes ---
-document.getElementById('btnDescargarWord').addEventListener('click', async ()=>{
-  if(!margenesCalculados){ return; }
-  const parrafos = prepararParrafos();
-  if(!parrafos){ alert('Pega tu manuscrito arriba antes de descargar.'); return; }
-  const fuente = document.getElementById('formatoFuente').value;
-  const m = margenesCalculados;
-  const btn = document.getElementById('btnDescargarWord');
-  btn.disabled = true; btn.textContent = 'Generando…';
-
-  try{
-    const { Document, Packer, Paragraph, TextRun, AlignmentType, convertInchesToTwip } = docx;
-
-    const hijos = parrafos.map(p => new Paragraph({
-      pageBreakBefore: p.esCapitulo,
-      alignment: p.esCapitulo ? AlignmentType.CENTER : AlignmentType.JUSTIFIED,
-      spacing: { after: 200 },
-      children: [ new TextRun({ text: p.texto, font: fuente, size: p.esCapitulo ? 32 : 23, bold: p.esCapitulo }) ]
-    }));
-
-    const doc = new Document({
-      sections: [{
-        properties: {
-          page: {
-            size: { width: convertInchesToTwip(m.anchoPagina), height: convertInchesToTwip(m.altoPagina) },
-            margin: {
-              top: convertInchesToTwip(m.externo), bottom: convertInchesToTwip(m.externo),
-              left: convertInchesToTwip(m.gutter), right: convertInchesToTwip(m.externo)
-            }
-          }
-        },
-        children: hijos
-      }]
-    });
-
-    const blob = await Packer.toBlob(doc);
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'manuscrito-formateado.docx';
-    a.click();
-    URL.revokeObjectURL(url);
-  } catch(err){
-    alert('No se pudo generar el Word. Revisa la consola (F12) para más detalle.');
-    console.error(err);
-  } finally {
-    btn.disabled = false; btn.textContent = '⬇️ Descargar como Word (.docx)';
-  }
-});
-
-document.getElementById('formatoRegalia').addEventListener('change', (e)=>{
-  const esEbook = e.target.value === 'ebook';
-  document.getElementById('campoTinta').style.display = esEbook ? 'none' : 'block';
-  document.getElementById('campoPaginasRegalia').style.display = esEbook ? 'none' : 'block';
-});
-
-document.getElementById('btnCalcularRegalia').addEventListener('click', ()=>{
-  const formato = document.getElementById('formatoRegalia').value;
-  const precio = parseFloat(document.getElementById('precioRegalia').value) || 0;
-  let costo = 0, tasa = 0, regalia = 0, minimo = 0, tasaTexto = '';
-
-  if(formato === 'ebook'){
-    tasa = (precio >= 2.99 && precio <= 9.99) ? 0.70 : 0.35;
-    tasaTexto = (tasa*100) + '%';
-    regalia = +(precio * tasa).toFixed(2);
-    minimo = 0.99;
-  } else {
-    const tinta = document.getElementById('tintaRegalia').value;
-    const paginas = Math.max(24, parseInt(document.getElementById('paginasRegalia').value) || 24);
-    const porPagina = tinta === 'color' ? 0.07 : 0.012;
-    costo = +(0.85 + (paginas * porPagina)).toFixed(2);
-    tasa = precio >= 9.99 ? 0.60 : 0.50;
-    tasaTexto = (tasa*100) + '%';
-    regalia = +((precio * tasa) - costo).toFixed(2);
-    minimo = +(costo / tasa).toFixed(2);
-  }
-
-  document.getElementById('regaliaResultado').style.display = 'grid';
-  document.getElementById('rCosto').textContent = formato === 'ebook' ? 'N/A' : ('US$' + costo);
-  document.getElementById('rTasa').textContent = tasaTexto;
-  document.getElementById('rRegalia').innerHTML = `<span class="${regalia < 0 ? 'negativo' : ''}">US$${regalia}</span>`;
-  document.getElementById('rMinimo').textContent = 'US$' + minimo;
-});
-
-const chatScroll = document.getElementById('chatScroll');
-const input = document.getElementById('chatInput');
-const sendBtn = document.getElementById('chatSend');
-
-function addMsg(texto, clase){
-  const d = document.createElement('div');
-  d.className = 'msg ' + clase;
-  d.textContent = texto;
-  chatScroll.appendChild(d);
-  chatScroll.scrollTop = chatScroll.scrollHeight;
-  return d;
-}
-
-function showTyping(){
-  const d = document.createElement('div');
-  d.className = 'typing-dots'; d.id = 'typingIndicator';
-  d.innerHTML = '<span></span><span></span><span></span>';
-  chatScroll.appendChild(d);
-  chatScroll.scrollTop = chatScroll.scrollHeight;
-}
-function removeTyping(){ const t = document.getElementById('typingIndicator'); if(t) t.remove(); }
-
-function streamTexto(texto){
-  const d = document.createElement('div');
-  d.className = 'msg bot';
-  const span = document.createElement('span');
-  const cursor = document.createElement('span'); cursor.className = 'cursor-typing';
-  d.appendChild(span); d.appendChild(cursor);
-  chatScroll.appendChild(d);
-  let i = 0;
-  const iv = setInterval(()=>{
-    span.textContent += texto[i]; i++;
-    chatScroll.scrollTop = chatScroll.scrollHeight;
-    if(i >= texto.length){ clearInterval(iv); cursor.remove(); }
-  }, 12);
-}
-
-function actualizarPanel(p){
-  estadoProyecto = { ...estadoProyecto, ...p,
-    personas: (p.personas && p.personas.length) ? p.personas : estadoProyecto.personas,
-    eventos: (p.eventos && p.eventos.length) ? p.eventos : estadoProyecto.eventos
-  };
-  document.getElementById('pTitulo').textContent = estadoProyecto.titulo || 'Sin título aún';
-  document.getElementById('pTipo').textContent = estadoProyecto.tipo || '—';
-  document.getElementById('pObjetivo').textContent = estadoProyecto.objetivo || '—';
-  document.getElementById('pTono').textContent = estadoProyecto.tono || '—';
-  document.getElementById('pResumen').textContent = estadoProyecto.resumen || '—';
-  const pct = Math.max(0, Math.min(100, estadoProyecto.progreso || 0));
-  document.getElementById('pFill').style.width = pct + '%';
-  document.getElementById('pPct').textContent = pct + '% del proyecto identificado';
-
-  const listaP = document.getElementById('listaPersonas');
-  listaP.innerHTML = estadoProyecto.personas.length
-    ? estadoProyecto.personas.map(p=>`<div class="persona-card"><b>${p.nombre}</b><span>${p.descripcion||''}</span></div>`).join('')
-    : '<div class="vacio">Todavía no se identifican personas en la historia.</div>';
-
-  const listaE = document.getElementById('listaEventos');
-  listaE.innerHTML = estadoProyecto.eventos.length
-    ? estadoProyecto.eventos.map(e=>`<div class="evento"><b>${e.nombre}</b><span>${e.descripcion||''}</span></div>`).join('')
-    : '<div class="vacio">Todavía no hay acontecimientos registrados.</div>';
-}
-
-async function llamarIA(textoUsuario){
-  showTyping();
-  try{
-    const controlador = new AbortController();
-    const tiempoLimite = setTimeout(()=> controlador.abort(), 30000);
-
-    const response = await fetch("http://localhost:3001/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        system: SYSTEM_PROMPT,
-        messages: historial
-      }),
-      signal: controlador.signal
-    });
-    clearTimeout(tiempoLimite);
-    const data = await response.json();
-    removeTyping();
-
-    const textoCrudo = (data.content || []).map(b => b.text || '').join('');
-    const limpio = textoCrudo.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(limpio);
-
-    streamTexto(parsed.respuesta);
-    actualizarPanel(parsed.proyecto || {});
-    historial.push({ role:'assistant', content: limpio });
-    guardarMensaje('assistant', limpio);
-    guardarProyecto(estadoProyecto);
-    registrarUso(contarPalabras(textoUsuario) + contarPalabras(parsed.respuesta));
-  } catch(err){
-    removeTyping();
-    const mensaje = (err.name === 'AbortError')
-      ? 'El asistente tardó demasiado en responder (más de 30s). Intenta de nuevo — si se repite, revisa la terminal del backend.'
-      : 'No pude conectar con el asistente. Revisa la conexión e intenta de nuevo.';
-    addMsg(mensaje, 'error');
-    console.error('Error IA:', err);
-  } finally {
-    input.disabled = false; sendBtn.disabled = false; input.focus();
-  }
-}
-
-function enviar(){
-  const val = input.value.trim();
-  if(!val) return;
-
-  if(limiteAlcanzado()){
-    addMsg(val, 'user');
-    const d = document.createElement('div');
-    d.className = 'msg limite';
-    d.innerHTML = `Llegaste al límite de tu plan ${NOMBRES_PLAN[estadoUso.plan]} este mes. <a href="escritores-hispanos-app-mockup.html#precios" target="_blank">Mejora tu plan para seguir escribiendo →</a>`;
-    chatScroll.appendChild(d);
-    chatScroll.scrollTop = chatScroll.scrollHeight;
-    input.value = '';
-    return;
-  }
-
-  addMsg(val, 'user');
-  historial.push({ role:'user', content: val });
-  guardarMensaje('user', val);
-  input.value = ''; input.disabled = true; sendBtn.disabled = true;
-  llamarIA(val);
-}
-
-sendBtn.addEventListener('click', enviar);
-input.addEventListener('keydown', e=>{ if(e.key === 'Enter') enviar(); });
-
-document.getElementById('btnNuevo').addEventListener('click', crearProyecto);
-
-document.querySelectorAll('.tab').forEach(t=>{
-  t.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('activo'));
-    t.classList.add('activo');
-    document.getElementById('panelProyecto').style.display = t.dataset.tab === 'proyecto' ? 'block' : 'none';
-    document.getElementById('panelContexto').style.display = t.dataset.tab === 'contexto' ? 'block' : 'none';
-    document.getElementById('panelCronologia').style.display = t.dataset.tab === 'cronologia' ? 'block' : 'none';
-  });
-});
-
-function iniciar(){
-  addMsg('Hola. Soy tu Director Editorial. Cuéntame libremente qué deseas escribir. Recordaré de quién hablamos, qué ocurrió y cómo se relacionan los acontecimientos.', 'bot');
-  historial.push({ role:'user', content:'(inicio de conversación, aún no he dicho nada)' });
-  historial.push({ role:'assistant', content: JSON.stringify({respuesta:'Hola. Soy tu Director Editorial. Cuéntame libremente qué deseas escribir. Recordaré de quién hablamos, qué ocurrió y cómo se relacionan los acontecimientos.', proyecto:estadoProyecto}) });
-  guardarMensaje('user', '(inicio de conversación, aún no he dicho nada)');
-  guardarMensaje('assistant', historial[historial.length-1].content);
-}
+  iniciarConversacion();
 </script>
+
 </body>
 </html>
