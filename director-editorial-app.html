@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Director Editorial — Escritores Hispanos</title>
+<title>Director Editorial — Hispanix AI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -197,7 +197,7 @@
 
 <div class="login-overlay" id="loginOverlay">
   <div class="login-box">
-    <img src="logo-escritores-hispanos.png" alt="Escritores Hispanos" style="width:88px; height:88px; margin:0 auto 14px; display:block;">
+    <img src="logo-hispanix-ai.png" alt="Hispanix AI" style="width:88px; height:88px; margin:0 auto 14px; display:block;">
     <p>Inicia sesión con tu correo. Te enviamos un enlace, sin contraseña.</p>
     <input type="email" id="loginEmail" placeholder="tu@correo.com">
     <button id="loginBtn">Enviar enlace mágico</button>
@@ -208,7 +208,7 @@
 <div class="layout" id="appLayout" style="display:none;">
   <div class="sidebar">
     <div style="text-align:center; margin-bottom:6px;">
-      <img src="logo-escritores-hispanos.png" alt="Escritores Hispanos" style="width:76px; height:76px; display:block; margin:0 auto 8px;">
+      <img src="logo-hispanix-ai.png" alt="Hispanix AI" style="width:76px; height:76px; display:block; margin:0 auto 8px;">
     </div>
     <div class="rol" style="text-align:center; margin-bottom:20px;">Director Editorial</div>
     <button class="btn-nuevo" id="btnNuevo">+ Nuevo libro</button>
@@ -232,7 +232,7 @@
         <option value="premium">🧪 Probar como: Autor Premium</option>
       </select>
     </div>
-    <div class="sidebar-foot">Escritores Hispanos<br>Prototipo — v0.3</div>
+    <div class="sidebar-foot">Hispanix AI<br>by Escritores Hispanos</div>
   </div>
 
   <div class="centro">
@@ -515,7 +515,7 @@
    repita una pregunta ya respondida y mantenga el contexto.
 ========================================================= */
 
-const SYSTEM_PROMPT = `Eres el "Director Editorial" de Escritores Hispanos: un editor literario con décadas de oficio, cercano y agudo, que ayuda a personas hispanohablantes a convertir una idea vaga en un proyecto de libro concreto. Trato de "tú", cálido pero nunca condescendiente — hablas como alguien que ha leído miles de manuscritos y sabe distinguir rápido lo que late de verdad en una historia.
+const SYSTEM_PROMPT = `Eres el "Director Editorial" de Hispanix AI: un editor literario con décadas de oficio, cercano y agudo, que ayuda a personas hispanohablantes a convertir una idea vaga en un proyecto de libro concreto. Trato de "tú", cálido pero nunca condescendiente — hablas como alguien que ha leído miles de manuscritos y sabe distinguir rápido lo que late de verdad en una historia.
 
 TU CRITERIO EDITORIAL:
 - No eres un formulario disfrazado de conversación. Cuando algo que dice el usuario tiene potencial narrativo real (una imagen fuerte, una contradicción, un detalle concreto), dilo explícitamente y explica en una frase por qué funciona — igual que un editor subrayaría una frase en el margen.
@@ -898,7 +898,7 @@ document.getElementById('btnTraducir').addEventListener('click', async ()=>{
   const btn = document.getElementById('btnTraducir');
   if(!texto) return;
   if(limiteAlcanzado()){
-    resultado.innerHTML = `<div class="herr-resultado">Llegaste al límite de tu plan este mes. <a href="index.html#precios" target="_blank">Mejora tu plan →</a></div>`;
+    resultado.innerHTML = `<div class="herr-resultado">Llegaste al límite de tu plan este mes. <a href="#" onclick="document.getElementById('modalMejorarPlan').style.display='flex'; return false;">Mejora tu plan →</a></div>`;
     return;
   }
 
@@ -934,7 +934,7 @@ document.getElementById('btnCorregir').addEventListener('click', async ()=>{
   const btn = document.getElementById('btnCorregir');
   if(!texto){ return; }
   if(limiteAlcanzado()){
-    resultado.innerHTML = `<div class="herr-resultado">Llegaste al límite de tu plan este mes. <a href="index.html#precios" target="_blank">Mejora tu plan →</a></div>`;
+    resultado.innerHTML = `<div class="herr-resultado">Llegaste al límite de tu plan este mes. <a href="#" onclick="document.getElementById('modalMejorarPlan').style.display='flex'; return false;">Mejora tu plan →</a></div>`;
     return;
   }
 
@@ -1045,7 +1045,7 @@ document.getElementById('btnGenerarPortada').addEventListener('click', async ()=
   if(!descripcion){ alert('Describe la escena o imagen primero.'); return; }
 
   if(estadoUso.plan === 'gratis'){
-    resultado.innerHTML = `<div class="herr-resultado">La generación de portadas con IA es una función de los planes Pro y Premium. <a href="index.html#precios" target="_blank">Mejora tu plan →</a></div>`;
+    resultado.innerHTML = `<div class="herr-resultado">La generación de portadas con IA es una función de los planes Pro y Premium. <a href="#" onclick="document.getElementById('modalMejorarPlan').style.display='flex'; return false;">Mejora tu plan →</a></div>`;
     return;
   }
 
@@ -1446,7 +1446,7 @@ function enviar(){
     addMsg(val, 'user');
     const d = document.createElement('div');
     d.className = 'msg limite';
-    d.innerHTML = `Llegaste al límite de tu plan ${NOMBRES_PLAN[estadoUso.plan]} este mes. <a href="index.html#precios" target="_blank">Mejora tu plan para seguir escribiendo →</a>`;
+    d.innerHTML = `Llegaste al límite de tu plan ${NOMBRES_PLAN[estadoUso.plan]} este mes. <a href="#" onclick="document.getElementById('modalMejorarPlan').style.display='flex'; return false;">Mejora tu plan para seguir escribiendo →</a>`;
     chatScroll.appendChild(d);
     chatScroll.scrollTop = chatScroll.scrollHeight;
     input.value = '';
