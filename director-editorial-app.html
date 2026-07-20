@@ -24,6 +24,38 @@
   body{ font-family:'Inter',sans-serif; background:var(--papel); color:var(--texto); height:100vh; overflow:hidden; }
   .layout{ display:grid; grid-template-columns:240px 1fr 320px; grid-template-rows:100vh; height:100vh; }
 
+  /* ===== RESPONSIVE: CELULAR / PANTALLAS CHICAS ===== */
+  .btn-menu-movil{ display:none; }
+  @media (max-width: 880px){
+    html, body{ overflow:hidden; width:100%; }
+    .layout{
+      grid-template-columns: 1fr; grid-template-rows: 1fr;
+      width:100vw; height:100vh; height:100dvh;
+    }
+    .sidebar, .panel{
+      position:fixed; top:0; bottom:0; z-index:200; width:82vw; max-width:300px;
+      transition:transform .25s ease; box-shadow:0 0 30px rgba(0,0,0,0.3);
+    }
+    .sidebar{ left:0; transform:translateX(-105%); }
+    .sidebar.abierto{ transform:translateX(0); }
+    .panel{ right:0; transform:translateX(105%); width:88vw; max-width:340px; }
+    .panel.abierto{ transform:translateX(0); }
+    .centro{ width:100vw; border:none; }
+    .btn-menu-movil{
+      display:flex; align-items:center; justify-content:center; width:36px; height:36px;
+      border-radius:8px; border:1px solid var(--linea); background:var(--papel-claro);
+      font-size:1.1rem; cursor:pointer; flex-shrink:0;
+    }
+    .chat-header{ display:flex; align-items:center; gap:12px; }
+    .overlay-movil{
+      display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:150;
+    }
+    .overlay-movil.activo{ display:block; }
+  }
+  @media (min-width: 881px){
+    .overlay-movil{ display:none !important; }
+  }
+
   /* ===== SIDEBAR ===== */
   .sidebar{ background:var(--ink); color:#c9d3cb; display:flex; flex-direction:column; padding:22px 16px; }
   .logo{ font-family:'Poppins',sans-serif; font-weight:700; font-size:1.15rem; color:var(--papel-claro); margin-bottom:4px; }
@@ -205,8 +237,12 @@
 
   <div class="centro">
     <div class="chat-header">
-      <h1>Director Editorial</h1>
-      <p>Seguimiento del contexto y de los acontecimientos</p>
+      <button class="btn-menu-movil" id="btnAbrirSidebar" aria-label="Menú">☰</button>
+      <div style="flex:1;">
+        <h1>Director Editorial</h1>
+        <p>Seguimiento del contexto y de los acontecimientos</p>
+      </div>
+      <button class="btn-menu-movil" id="btnAbrirPanel" aria-label="Proyecto">📋</button>
     </div>
     <div class="chat-scroll" id="chatScroll"></div>
     <div class="chat-inputbar">
@@ -214,6 +250,8 @@
       <button id="chatSend">Enviar</button>
     </div>
   </div>
+
+  <div class="overlay-movil" id="overlayMovil"></div>
 
   <div class="panel">
     <div class="tabs">
@@ -943,6 +981,36 @@ document.getElementById('navPortada').addEventListener('click', ()=>{
   document.getElementById('modalPortada').style.display = 'flex';
 });
 document.getElementById('cerrarModalPortada').addEventListener('click', ()=> document.getElementById('modalPortada').style.display = 'none');
+
+// ---- Menú móvil: abrir/cerrar barra lateral y panel de proyecto ----
+const sidebarEl = document.querySelector('.sidebar');
+const panelEl = document.querySelector('.panel');
+const overlayMovil = document.getElementById('overlayMovil');
+
+function cerrarPanelesMovil(){
+  sidebarEl.classList.remove('abierto');
+  panelEl.classList.remove('abierto');
+  overlayMovil.classList.remove('activo');
+}
+
+document.getElementById('btnAbrirSidebar').addEventListener('click', ()=>{
+  panelEl.classList.remove('abierto');
+  sidebarEl.classList.add('abierto');
+  overlayMovil.classList.add('activo');
+});
+
+document.getElementById('btnAbrirPanel').addEventListener('click', ()=>{
+  sidebarEl.classList.remove('abierto');
+  panelEl.classList.add('abierto');
+  overlayMovil.classList.add('activo');
+});
+
+overlayMovil.addEventListener('click', cerrarPanelesMovil);
+
+// Cierra el panel móvil automáticamente al elegir una opción del menú
+document.querySelectorAll('.sidebar .nav-item').forEach(item=>{
+  item.addEventListener('click', cerrarPanelesMovil);
+});
 
 document.getElementById('navPortadaIA').addEventListener('click', ()=>{
   document.getElementById('modalPortadaIA').style.display = 'flex';
