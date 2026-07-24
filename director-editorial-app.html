@@ -1612,7 +1612,11 @@ document.getElementById('btnDescargarWord').addEventListener('click', async ()=>
   btn.disabled = true; btn.textContent = 'Generando…';
 
   try{
-    const { Document, Packer, Paragraph, TextRun, AlignmentType, convertInchesToTwip } = docx;
+    if(typeof docx === 'undefined'){
+      throw new Error('La librería de Word no cargó (docx.js). Revisa tu conexión a internet y recarga la página.');
+    }
+    const { Document, Packer, Paragraph, TextRun, AlignmentType } = docx;
+    const pulgadasATwips = (pulgadas) => Math.round(pulgadas * 1440);
 
     const hijos = parrafos.map(p => new Paragraph({
       pageBreakBefore: p.esCapitulo,
@@ -1625,10 +1629,10 @@ document.getElementById('btnDescargarWord').addEventListener('click', async ()=>
       sections: [{
         properties: {
           page: {
-            size: { width: convertInchesToTwip(m.anchoPagina), height: convertInchesToTwip(m.altoPagina) },
+            size: { width: pulgadasATwips(m.anchoPagina), height: pulgadasATwips(m.altoPagina) },
             margin: {
-              top: convertInchesToTwip(m.externo), bottom: convertInchesToTwip(m.externo),
-              left: convertInchesToTwip(m.gutter), right: convertInchesToTwip(m.externo)
+              top: pulgadasATwips(m.externo), bottom: pulgadasATwips(m.externo),
+              left: pulgadasATwips(m.gutter), right: pulgadasATwips(m.externo)
             }
           }
         },
@@ -1643,7 +1647,7 @@ document.getElementById('btnDescargarWord').addEventListener('click', async ()=>
     a.click();
     URL.revokeObjectURL(url);
   } catch(err){
-    alert('No se pudo generar el Word. Revisa la consola (F12) para más detalle.');
+    alert('No se pudo generar el Word: ' + err.message);
     console.error(err);
   } finally {
     btn.disabled = false; btn.textContent = '⬇️ Descargar como Word (.docx)';
