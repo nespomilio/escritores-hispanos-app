@@ -59,6 +59,12 @@
   .opcion-genero:hover{ border-color:var(--oro); background:#fff; }
   .opcion-genero b{ display:block; font-size:0.9rem; margin-bottom:2px; }
   .opcion-genero span{ font-size:0.78rem; color:#8a8478; }
+
+  .audio-capitulo-item{ border:1px solid var(--linea); border-radius:10px; padding:14px 16px; margin-bottom:12px; background:var(--papel-claro); }
+  .audio-capitulo-item .fila-audio{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+  .audio-capitulo-item b{ font-family:'Poppins',sans-serif; font-size:0.9rem; }
+  .audio-capitulo-item .largo-aviso{ font-size:0.72rem; color:var(--vino); margin-top:4px; }
+  .audio-capitulo-item audio{ width:100%; margin-top:10px; }
   .btn-menu-movil{ display:none; }
   @media (max-width: 880px){
     html, body{ overflow:hidden; width:100%; }
@@ -290,6 +296,10 @@
         <div class="tarjeta-modulo" data-modulo="manuscrito" style="border-color:var(--oro);">
           <span class="icono">📖</span><h3>Mi Manuscrito</h3>
           <p>Tu libro completo, capítulo por capítulo, en un solo documento.</p>
+        </div>
+        <div class="tarjeta-modulo" data-modulo="audiolibro">
+          <span class="icono">🎧</span><h3>Audiolibro</h3>
+          <p>Convierte tus capítulos en audio narrado con IA.</p>
         </div>
         <div class="tarjeta-modulo" data-modulo="escritura">
           <span class="icono">✍️</span><h3>Escritura</h3>
@@ -614,6 +624,27 @@
     <p style="font-size:0.82rem; color:#5a665e; margin-bottom:16px;">Elige lo que más se acerque — el Director Editorial arranca la conversación ya orientado a tu tipo de libro.</p>
     <div id="opcionesGenero" style="display:flex; flex-direction:column; gap:8px;"></div>
     <button class="modal-cerrar" id="cancelarModalGenero">Cancelar</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalAudiolibro" style="display:none;">
+  <div class="modal-box modal-ancho" style="max-height:82vh;">
+    <h3>Audiolibro</h3>
+    <p style="font-size:0.82rem; color:#5a665e; margin-bottom:6px;">Convierte cada capítulo en audio narrado con IA. Máximo ~4.000 caracteres por capítulo (los más largos habrá que dividirlos).</p>
+    <p style="font-size:0.72rem; color:var(--vino); margin-bottom:14px; font-weight:600;">⚠️ Aviso obligatorio: esta voz es generada por inteligencia artificial, no es una persona real — avisa esto a quien escuche el audio.</p>
+    <div class="herr-campo" style="margin-bottom:14px; max-width:260px;">
+      <label>Voz</label>
+      <select id="vozAudiolibro">
+        <option value="nova">Nova (femenina, cálida)</option>
+        <option value="shimmer">Shimmer (femenina, suave)</option>
+        <option value="alloy">Alloy (neutra)</option>
+        <option value="echo">Echo (masculina)</option>
+        <option value="onyx">Onyx (masculina, grave)</option>
+        <option value="fable">Fable (narrativa, expresiva)</option>
+      </select>
+    </div>
+    <div id="listaAudioCapitulos"></div>
+    <button class="modal-cerrar" id="cerrarModalAudiolibro">Cerrar</button>
   </div>
 </div>
 
@@ -1327,6 +1358,7 @@ document.querySelectorAll('.tarjeta-modulo').forEach(tarjeta=>{
   tarjeta.addEventListener('click', ()=>{
     const modulo = tarjeta.dataset.modulo;
     switch(modulo){
+      case 'audiolibro': abrirAudiolibro(); break;
       case 'manuscrito': abrirManuscrito(); break;
       case 'escritura': mostrarChat(); break;
       case 'proyecto': abrirPanelEnTab('proyecto'); break;
@@ -1428,6 +1460,80 @@ function renderManuscrito(){
       }
     });
   });
+}
+
+function renderAudiolibro(){
+  const lista = document.getElementById('listaAudioCapitulos');
+  if(!estadoProyecto.capitulos.length){
+    lista.innerHTML = '<p style="font-size:0.85rem; color:#8a8478;">Todavía no hay capítulos en tu manuscrito. Escribe con el Director Editorial primero.</p>';
+    return;
+  }
+  lista.innerHTML = estadoProyecto.capitulos.map((c, i) => {
+    const largo = (c.contenido || '').length;
+    const excede = largo > 4000;
+    return `
+    <div class="audio-capitulo-item" data-indice="${i}">
+      <div class="fila-audio">
+        <b>${c.titulo || 'Capítulo ' + (i+1)}</b>
+        <button class="herr-btn btn-generar-audio" data-indice="${i}" style="font-size:0.78rem; padding:8px 14px;" ${excede ? 'disabled' : ''}>🎧 Generar audio</button>
+      </div>
+      ${excede ? `<div class="largo-aviso">Este capítulo tiene ${largo.toLocaleString('es')} caracteres — supera el límite de ~4.000. Recórtalo en "Mi Manuscrito" para poder generar el audio.</div>` : ''}
+      <div id="audioResultado-${i}"></div>
+    </div>
+  `;
+  }).join('');
+
+  lista.querySelectorAll('.btn-generar-audio').forEach(btn=>{
+    btn.addEventListener('click', () => generarAudioCapitulo(parseInt(btn.dataset.indice)));
+  });
+}
+
+function abrirAudiolibro(){
+  renderAudiolibro();
+  document.getElementById('modalAudiolibro').style.display = 'flex';
+}
+
+document.getElementById('cerrarModalAudiolibro').addEventListener('click', ()=> document.getElementById('modalAudiolibro').style.display = 'none');
+
+async function generarAudioCapitulo(indice){
+  const btn = document.querySelector(`.btn-generar-audio[data-indice="${indice}"]`);
+  const resultado = document.getElementById(`audioResultado-${indice}`);
+  const capitulo = estadoProyecto.capitulos[indice];
+  const voz = document.getElementById('vozAudiolibro').value;
+
+  if(estadoUso.plan === 'gratis'){
+    resultado.innerHTML = `<div class="herr-resultado" style="margin-top:10px;">El audiolibro es una función de los planes Pro y Premium. <a href="#" onclick="document.getElementById('modalMejorarPlan').style.display='flex'; return false;">Mejora tu plan →</a></div>`;
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Generando… (puede tardar ~15s)';
+  resultado.innerHTML = '';
+
+  try{
+    const response = await fetch("https://escritores-hispanos-backend.onrender.com/api/audio", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ texto: capitulo.contenido, voz })
+    });
+    const data = await response.json();
+    if(!response.ok) throw new Error(data.error || 'Error desconocido');
+
+    const audioSrc = `data:audio/mp3;base64,${data.audio_base64}`;
+    resultado.innerHTML = `
+      <audio controls src="${audioSrc}"></audio>
+      <button class="copiar-btn" id="btnDescargarAudio-${indice}" style="margin-top:8px;">⬇️ Descargar MP3</button>
+    `;
+    document.getElementById(`btnDescargarAudio-${indice}`).addEventListener('click', ()=>{
+      const a = document.createElement('a');
+      a.href = audioSrc; a.download = `${(capitulo.titulo||'capitulo').replace(/[^\w\-]+/g,'-')}.mp3`;
+      a.click();
+    });
+    registrarUso(0, 'audiolibro');
+  } catch(err){
+    resultado.innerHTML = `<div class="herr-resultado" style="margin-top:10px;">No se pudo generar el audio: ${err.message}</div>`;
+    console.error(err);
+  } finally {
+    btn.disabled = false; btn.textContent = '🎧 Generar audio';
+  }
 }
 
 function abrirManuscrito(){
