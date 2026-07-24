@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Director Editorial — Hispanix AI</title>
+<title>Director Editorial — LibroOS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -24,7 +24,21 @@
   body{ font-family:'Inter',sans-serif; background:var(--papel); color:var(--texto); height:100vh; overflow:hidden; }
   .layout{ display:grid; grid-template-columns:240px 1fr 320px; grid-template-rows:100vh; height:100vh; }
 
-  /* ===== RESPONSIVE: CELULAR / PANTALLAS CHICAS ===== */
+  /* ===== PANTALLA DE INICIO: MÓDULOS ===== */
+  .vista-inicio{ padding:36px 40px; overflow-y:auto; height:100%; }
+  .vista-inicio-header{ margin-bottom:28px; }
+  .vista-inicio-header h1{ font-family:'Poppins',sans-serif; font-size:1.5rem; margin-bottom:4px; }
+  .vista-inicio-header p{ font-size:0.85rem; color:#5a665e; }
+  .grid-modulos{ display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:16px; }
+  .tarjeta-modulo{
+    background:var(--papel-claro); border:1px solid var(--linea); border-radius:14px; padding:22px 20px;
+    cursor:pointer; transition:transform .15s, box-shadow .15s, border-color .15s; text-align:left;
+  }
+  .tarjeta-modulo:hover{ transform:translateY(-3px); box-shadow:0 14px 30px -14px rgba(0,0,0,0.2); border-color:var(--oro); }
+  .tarjeta-modulo .icono{ font-size:1.9rem; margin-bottom:12px; display:block; }
+  .tarjeta-modulo h3{ font-family:'Poppins',sans-serif; font-size:1rem; color:var(--ink); margin-bottom:6px; }
+  .tarjeta-modulo p{ font-size:0.8rem; color:#5a665e; line-height:1.45; }
+  .vista-oculta{ display:none !important; }
   .btn-menu-movil{ display:none; }
   @media (max-width: 880px){
     html, body{ overflow:hidden; width:100%; }
@@ -197,7 +211,9 @@
 
 <div class="login-overlay" id="loginOverlay">
   <div class="login-box">
-    <img src="logo-hispanix-ai.png" alt="Hispanix AI" style="width:88px; height:88px; margin:0 auto 14px; display:block;">
+    <img src="logo-libroos.png" alt="LibroOS" style="width:88px; height:88px; margin:0 auto 10px; display:block;">
+    <div style="font-family:'Poppins',sans-serif; font-weight:700; font-size:1.1rem; color:var(--ink); margin-bottom:4px;">LibroOS</div>
+    <div style="font-size:0.78rem; color:var(--oro); font-weight:600; margin-bottom:18px;">El sistema operativo para escritores, autores y editoriales</div>
     <p>Inicia sesión con tu correo. Te enviamos un enlace, sin contraseña.</p>
     <input type="email" id="loginEmail" placeholder="tu@correo.com">
     <button id="loginBtn">Enviar enlace mágico</button>
@@ -208,11 +224,11 @@
 <div class="layout" id="appLayout" style="display:none;">
   <div class="sidebar">
     <div style="text-align:center; margin-bottom:6px;">
-      <img src="logo-hispanix-ai.png" alt="Hispanix AI" style="width:76px; height:76px; display:block; margin:0 auto 8px;">
+      <img src="logo-libroos.png" alt="LibroOS" style="width:76px; height:76px; display:block; margin:0 auto 8px;">
     </div>
     <div class="rol" style="text-align:center; margin-bottom:20px;">Director Editorial</div>
     <button class="btn-nuevo" id="btnNuevo">+ Nuevo libro</button>
-    <div class="nav-item activo"><span class="nav-icon">◆</span> Conversación</div>
+    <div class="nav-item activo" id="navConversacion"><span class="nav-icon">◆</span> Conversación</div>
     <div class="nav-item" title="Disponible en la versión completa"><span class="nav-icon">▤</span> Mis libros</div>
     <div class="nav-item" id="navEditor"><span class="nav-icon">✎</span> Editor inteligente</div>
     <div class="nav-item" id="navFormato"><span class="nav-icon">📄</span> Formatear manuscrito</div>
@@ -220,6 +236,7 @@
     <div class="nav-item" title="Disponible en la versión completa"><span class="nav-icon">◐</span> Memoria editorial</div>
     <div class="nav-item" id="navPortada"><span class="nav-icon">🎨</span> Calculadora de portada</div>
     <div class="nav-item" id="navPortadaIA"><span class="nav-icon">🖼️</span> Generar portada con IA</div>
+    <div class="nav-item" id="navMarketing"><span class="nav-icon">📈</span> Marketing</div>
     <div class="nav-item" id="navRegalias"><span class="nav-icon">€</span> Precio y regalías</div>
     <div class="nav-item" id="navKdp"><span class="nav-icon">↗</span> Publicar en KDP</div>
     <div class="uso-box" id="usoBox">
@@ -232,22 +249,74 @@
         <option value="premium">🧪 Probar como: Autor Premium</option>
       </select>
     </div>
-    <div class="sidebar-foot">Hispanix AI<br>by Escritores Hispanos</div>
+    <div class="sidebar-foot">LibroOS<br>by Escritores Hispanos</div>
   </div>
 
   <div class="centro">
-    <div class="chat-header">
-      <button class="btn-menu-movil" id="btnAbrirSidebar" aria-label="Menú">☰</button>
-      <div style="flex:1;">
-        <h1>Director Editorial</h1>
-        <p>Seguimiento del contexto y de los acontecimientos</p>
+    <div class="vista-inicio" id="vistaInicio">
+      <div class="vista-inicio-header">
+        <h1>Tu escritorio</h1>
+        <p>Elige un módulo para continuar con tu proyecto.</p>
       </div>
-      <button class="btn-menu-movil" id="btnAbrirPanel" aria-label="Proyecto">📋</button>
+      <div class="grid-modulos">
+        <div class="tarjeta-modulo" data-modulo="escritura">
+          <span class="icono">✍️</span><h3>Escritura</h3>
+          <p>Conversa con tu Director Editorial y escribe con ayuda de IA.</p>
+        </div>
+        <div class="tarjeta-modulo" data-modulo="proyecto">
+          <span class="icono">📚</span><h3>Proyecto del libro</h3>
+          <p>Tipo, objetivo, tono y resumen de tu obra en un solo lugar.</p>
+        </div>
+        <div class="tarjeta-modulo" data-modulo="personajes">
+          <span class="icono">👥</span><h3>Personajes</h3>
+          <p>Quiénes aparecen en tu historia y su rol en ella.</p>
+        </div>
+        <div class="tarjeta-modulo" data-modulo="cronologia">
+          <span class="icono">📅</span><h3>Cronología</h3>
+          <p>Los acontecimientos de tu historia, en orden.</p>
+        </div>
+        <div class="tarjeta-modulo" data-modulo="traducciones">
+          <span class="icono">🌍</span><h3>Traducciones</h3>
+          <p>Lleva tu texto a inglés, alemán, italiano, francés o portugués.</p>
+        </div>
+        <div class="tarjeta-modulo" data-modulo="portadas">
+          <span class="icono">🎨</span><h3>Portadas</h3>
+          <p>Medidas exactas para imprenta, o genera la ilustración con IA.</p>
+        </div>
+        <div class="tarjeta-modulo" data-modulo="maquetacion">
+          <span class="icono">📐</span><h3>Maquetación</h3>
+          <p>Márgenes, sangrado y formato listo para imprimir o Word.</p>
+        </div>
+        <div class="tarjeta-modulo" data-modulo="publicacion">
+          <span class="icono">🚀</span><h3>Publicación</h3>
+          <p>Checklist completo y metadatos para subir tu libro a KDP.</p>
+        </div>
+        <div class="tarjeta-modulo" data-modulo="marketing">
+          <span class="icono">📈</span><h3>Marketing</h3>
+          <p>Frase gancho, ideas de posts y copy para vender tu libro.</p>
+        </div>
+        <div class="tarjeta-modulo" data-modulo="ventas">
+          <span class="icono">💰</span><h3>Ventas y regalías</h3>
+          <p>Cuánto te queda por venta, según precio y formato.</p>
+        </div>
+      </div>
     </div>
-    <div class="chat-scroll" id="chatScroll"></div>
-    <div class="chat-inputbar">
-      <input type="text" id="chatInput" placeholder="Cuéntame libremente qué deseas escribir…" autocomplete="off">
-      <button id="chatSend">Enviar</button>
+
+    <div class="vista-oculta" id="vistaChat" style="display:flex; flex-direction:column; height:100%;">
+      <div class="chat-header">
+        <button class="btn-menu-movil" id="btnAbrirSidebar" aria-label="Menú">☰</button>
+        <button class="btn-menu-movil" id="btnVolverInicio" aria-label="Inicio" style="display:flex;">🏠</button>
+        <div style="flex:1;">
+          <h1>Director Editorial</h1>
+          <p>Seguimiento del contexto y de los acontecimientos</p>
+        </div>
+        <button class="btn-menu-movil" id="btnAbrirPanel" aria-label="Proyecto">📋</button>
+      </div>
+      <div class="chat-scroll" id="chatScroll"></div>
+      <div class="chat-inputbar">
+        <input type="text" id="chatInput" placeholder="Cuéntame libremente qué deseas escribir…" autocomplete="off">
+        <button id="chatSend">Enviar</button>
+      </div>
     </div>
   </div>
 
@@ -319,6 +388,7 @@
 <div class="modal-overlay" id="modalPortada" style="display:none;">
   <div class="modal-box modal-ancho">
     <h3>Calculadora de medidas de portada KDP</h3>
+    <p style="font-size:0.78rem; margin-bottom:10px;"><a href="#" id="irAPortadaIA" style="color:var(--verde); font-weight:600;">🎨 ¿Prefieres generar la ilustración con IA primero? →</a></p>
     <p style="font-size:0.82rem; color:#5a665e; margin-bottom:14px;">Calcula las medidas exactas de tu portada (tapa blanda) según el tamaño y páginas de tu libro, con sangrado y resolución para imprenta.</p>
     <div class="herr-grid">
       <div class="herr-campo">
@@ -505,6 +575,16 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="modalMarketing" style="display:none;">
+  <div class="modal-box modal-ancho">
+    <h3>Marketing para tu libro</h3>
+    <p style="font-size:0.82rem; color:#5a665e; margin-bottom:14px;">A partir de lo que ya sabemos de tu proyecto (habla primero con el Director Editorial si aún no lo hiciste), genera una frase gancho, ideas de publicaciones y una descripción corta para redes.</p>
+    <button class="herr-btn" id="btnGenerarMarketing">✨ Generar ideas de marketing</button>
+    <div id="marketingResultado"></div>
+    <button class="modal-cerrar" id="cerrarModalMarketing">Cerrar</button>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js"></script>
 <script>
@@ -515,7 +595,7 @@
    repita una pregunta ya respondida y mantenga el contexto.
 ========================================================= */
 
-const SYSTEM_PROMPT = `Eres el "Director Editorial" de Hispanix AI: un editor literario con décadas de oficio, cercano y agudo, que ayuda a personas hispanohablantes a convertir una idea vaga en un proyecto de libro concreto. Trato de "tú", cálido pero nunca condescendiente — hablas como alguien que ha leído miles de manuscritos y sabe distinguir rápido lo que late de verdad en una historia.
+const SYSTEM_PROMPT = `Eres el "Director Editorial" de LibroOS: un editor literario con décadas de oficio, cercano y agudo, que ayuda a personas hispanohablantes a convertir una idea vaga en un proyecto de libro concreto. Trato de "tú", cálido pero nunca condescendiente — hablas como alguien que ha leído miles de manuscritos y sabe distinguir rápido lo que late de verdad en una historia.
 
 TU CRITERIO EDITORIAL:
 - No eres un formulario disfrazado de conversación. Cuando algo que dice el usuario tiene potencial narrativo real (una imagen fuerte, una contradicción, un detalle concreto), dilo explícitamente y explica en una frase por qué funciona — igual que un editor subrayaría una frase en el margen.
@@ -621,7 +701,7 @@ document.getElementById('selectorPlanPrueba').addEventListener('change', async (
   }
 });
 
-async function registrarUso(palabras){
+async function registrarUso(palabras, herramienta){
   estadoUso.palabras_usadas_mes = (estadoUso.palabras_usadas_mes || 0) + palabras;
   actualizarBarraUso();
   if(!usuarioActual) return;
@@ -630,6 +710,10 @@ async function registrarUso(palabras){
     estadoUso.palabras_usadas_mes = data[0].palabras_usadas_mes;
     estadoUso.plan = data[0].plan;
     actualizarBarraUso();
+  }
+  // Registra qué herramienta se usó, sin guardar el contenido — solo para estadísticas agregadas
+  if(herramienta){
+    sb.from('eh_eventos_uso').insert({ usuario_id: usuarioActual.id, herramienta, palabras }).then(()=>{});
   }
 }
 
@@ -851,6 +935,7 @@ async function generarMetadatos(){
         <div class="metadato-bloque"><h5>Palabras clave</h5><p>${md.palabras_clave.join(' · ')}</p></div>
         <button class="copiar-btn" id="btnCopiarMetadatos">Copiar todo</button>
       </div>`;
+    registrarUso(0, 'metadatos');
     document.getElementById('btnCopiarMetadatos').addEventListener('click', ()=>{
       const texto = `TÍTULOS:\n${md.titulos.join('\n')}\n\nSUBTÍTULO:\n${md.subtitulo}\n\nSINOPSIS:\n${md.sinopsis}\n\nCATEGORÍAS:\n${md.categorias.join('\n')}\n\nPALABRAS CLAVE:\n${md.palabras_clave.join(', ')}`;
       navigator.clipboard.writeText(texto);
@@ -919,7 +1004,7 @@ document.getElementById('btnTraducir').addEventListener('click', async ()=>{
       navigator.clipboard.writeText(traduccion);
       document.getElementById('btnCopiarTraduccion').textContent = '¡Copiado!';
     });
-    registrarUso(contarPalabras(texto) + contarPalabras(traduccion));
+    registrarUso(contarPalabras(texto) + contarPalabras(traduccion), 'traduccion');
   } catch(err){
     resultado.innerHTML = `<div class="herr-resultado">No pude conectar con el traductor. Revisa que el backend siga corriendo e intenta de nuevo.</div>`;
     console.error(err);
@@ -967,7 +1052,7 @@ El texto completo del fragmento, con la gramática, ortografía y puntuación ya
       document.getElementById('btnCopiarCorregido').textContent = '¡Copiado! Pégalo en "Formatear manuscrito"';
     });
 
-    registrarUso(contarPalabras(texto) + contarPalabras(textoRespuesta));
+    registrarUso(contarPalabras(texto) + contarPalabras(textoRespuesta), 'correccion');
   } catch(err){
     resultado.innerHTML = `<div class="herr-resultado">No pude conectar con el corrector. Revisa que el backend siga corriendo e intenta de nuevo.</div>`;
     console.error(err);
@@ -1068,6 +1153,7 @@ document.getElementById('btnGenerarPortada').addEventListener('click', async ()=
       <button class="copiar-btn" id="btnDescargarPortada" style="margin-top:10px;">⬇️ Descargar imagen</button>
       <p class="herr-nota">Esta imagen sale a 1024×1536 px — para imprenta necesitas las medidas exactas que calculaste en la pestaña "Medidas exactas" (con sangrado y lomo). Ábrela en Canva o Photoshop, ajusta el lienzo a esas medidas y agrega ahí el título, tu nombre y (si aplica) la contraportada.</p>
     `;
+    registrarUso(0, 'portada_ia');
     document.getElementById('btnDescargarPortada').addEventListener('click', ()=>{
       const a = document.createElement('a');
       a.href = `data:image/png;base64,${b64}`;
@@ -1083,6 +1169,7 @@ document.getElementById('btnGenerarPortada').addEventListener('click', async ()=
 });
 
 document.getElementById('btnCalcularPortada').addEventListener('click', ()=>{
+  registrarUso(0, 'portada_medidas');
   const trim = document.getElementById('trimSize').value;
   const [anchoTrim, altoTrim] = trim.split('x').map(Number);
   const paginas = Math.max(24, parseInt(document.getElementById('numPaginas').value) || 24);
@@ -1113,6 +1200,110 @@ document.getElementById('navRegalias').addEventListener('click', ()=>{
   document.getElementById('modalRegalias').style.display = 'flex';
 });
 document.getElementById('cerrarModalRegalias').addEventListener('click', ()=> document.getElementById('modalRegalias').style.display = 'none');
+
+// ---- Escritorio de módulos: navegación entre "Inicio" y "Chat" ----
+const vistaInicio = document.getElementById('vistaInicio');
+const vistaChat = document.getElementById('vistaChat');
+
+function mostrarChat(){
+  vistaInicio.classList.add('vista-oculta');
+  vistaChat.classList.remove('vista-oculta');
+}
+function mostrarInicio(){
+  vistaChat.classList.add('vista-oculta');
+  vistaInicio.classList.remove('vista-oculta');
+}
+
+function abrirPanelEnTab(tab){
+  mostrarChat();
+  const tabBtn = document.querySelector(`.tab[data-tab="${tab}"]`);
+  if(tabBtn) tabBtn.click();
+  // En celular, además abre el panel deslizable
+  if(window.innerWidth <= 880){
+    document.querySelector('.panel').classList.add('abierto');
+    document.getElementById('overlayMovil').classList.add('activo');
+  }
+}
+
+document.getElementById('btnVolverInicio').addEventListener('click', mostrarInicio);
+document.getElementById('navConversacion').addEventListener('click', mostrarChat);
+
+document.querySelectorAll('.tarjeta-modulo').forEach(tarjeta=>{
+  tarjeta.addEventListener('click', ()=>{
+    const modulo = tarjeta.dataset.modulo;
+    switch(modulo){
+      case 'escritura': mostrarChat(); break;
+      case 'proyecto': abrirPanelEnTab('proyecto'); break;
+      case 'personajes': abrirPanelEnTab('contexto'); break;
+      case 'cronologia': abrirPanelEnTab('cronologia'); break;
+      case 'traducciones': document.getElementById('modalTraduccion').style.display = 'flex'; break;
+      case 'portadas': document.getElementById('modalPortada').style.display = 'flex'; break;
+      case 'maquetacion': document.getElementById('modalFormato').style.display = 'flex'; break;
+      case 'publicacion': renderKdp(); document.getElementById('modalKdp').style.display = 'flex'; break;
+      case 'marketing': document.getElementById('modalMarketing').style.display = 'flex'; break;
+      case 'ventas': document.getElementById('modalRegalias').style.display = 'flex'; break;
+    }
+  });
+});
+
+document.getElementById('irAPortadaIA').addEventListener('click', (e)=>{
+  e.preventDefault();
+  document.getElementById('modalPortada').style.display = 'none';
+  document.getElementById('modalPortadaIA').style.display = 'flex';
+});
+
+document.getElementById('cerrarModalMarketing').addEventListener('click', ()=> document.getElementById('modalMarketing').style.display = 'none');
+
+document.getElementById('btnGenerarMarketing').addEventListener('click', async ()=>{
+  const btn = document.getElementById('btnGenerarMarketing');
+  const resultado = document.getElementById('marketingResultado');
+  if(limiteAlcanzado()){
+    resultado.innerHTML = `<div class="herr-resultado">Llegaste al límite de tu plan este mes. <a href="#" onclick="document.getElementById('modalMejorarPlan').style.display='flex'; return false;">Mejora tu plan →</a></div>`;
+    return;
+  }
+  btn.disabled = true; btn.textContent = 'Generando…';
+  resultado.innerHTML = `<div class="herr-resultado">Pensando en cómo presentar tu libro…</div>`;
+
+  const promptSistema = `Eres un estratega de marketing editorial especializado en libros independientes en español. A partir del contexto de un proyecto de libro, genera material de marketing real y usable. Responde en texto plano (sin JSON, sin markdown), con estas secciones exactas:
+
+=== FRASE GANCHO ===
+Una sola frase de máximo 20 palabras que venda la esencia del libro (para usar en anuncios o la portada).
+
+=== DESCRIPCIÓN PARA REDES ===
+2-3 frases para acompañar un post de Instagram/Facebook anunciando el libro, con tono cercano, no de anuncio corporativo.
+
+=== 3 IDEAS DE PUBLICACIONES ===
+Tres ideas concretas y distintas de posts para promocionar el libro antes/durante el lanzamiento (no genéricas tipo "comparte tu libro", sino ideas específicas basadas en el contenido real del proyecto).
+
+=== HASHTAGS SUGERIDOS ===
+8-10 hashtags relevantes en español, mezclando genéricos de lectura y específicos del género/tema del libro.`;
+
+  const contexto = `Título: ${estadoProyecto.titulo || 'no definido'}. Tipo: ${estadoProyecto.tipo || 'no definido'}. Tono: ${estadoProyecto.tono || 'no definido'}. Resumen: ${estadoProyecto.resumen || 'no definido'}.`;
+
+  try{
+    const response = await fetch("https://escritores-hispanos-backend.onrender.com/api/chat", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ system: promptSistema, messages: [{ role:'user', content: contexto }] })
+    });
+    const data = await response.json();
+    const texto = (data.content || []).map(b => b.text || '').join('');
+    resultado.innerHTML = `<div class="herr-resultado">${texto.replace(/</g,'&lt;')}</div><button class="copiar-btn" id="btnCopiarMarketing">Copiar todo</button>`;
+    document.getElementById('btnCopiarMarketing').addEventListener('click', ()=>{
+      navigator.clipboard.writeText(texto);
+      document.getElementById('btnCopiarMarketing').textContent = '¡Copiado!';
+    });
+    registrarUso(contarPalabras(contexto) + contarPalabras(texto), 'marketing');
+  } catch(err){
+    resultado.innerHTML = `<div class="herr-resultado">No se pudo generar. Revisa tu conexión e intenta de nuevo.</div>`;
+    console.error(err);
+  } finally {
+    btn.disabled = false; btn.textContent = '✨ Generar ideas de marketing';
+  }
+});
+
+document.getElementById('navMarketing').addEventListener('click', ()=>{
+  document.getElementById('modalMarketing').style.display = 'flex';
+});
 
 // ---- Mejorar plan: checkout real con Stripe ----
 const PRICE_IDS = {
@@ -1226,6 +1417,7 @@ function prepararParrafos(){
 
 // --- Vista previa e impresión a PDF (usa @page real del navegador) ---
 document.getElementById('btnVistaImpresion').addEventListener('click', ()=>{
+  registrarUso(0, 'formateo');
   if(!margenesCalculados){ return; }
   const parrafos = prepararParrafos();
   if(!parrafos){ alert('Pega tu manuscrito arriba antes de generar la vista previa.'); return; }
@@ -1308,6 +1500,7 @@ document.getElementById('formatoRegalia').addEventListener('change', (e)=>{
 });
 
 document.getElementById('btnCalcularRegalia').addEventListener('click', ()=>{
+  registrarUso(0, 'regalias');
   const formato = document.getElementById('formatoRegalia').value;
   const precio = parseFloat(document.getElementById('precioRegalia').value) || 0;
   let costo = 0, tasa = 0, regalia = 0, minimo = 0, tasaTexto = '';
@@ -1425,7 +1618,7 @@ async function llamarIA(textoUsuario){
     historial.push({ role:'assistant', content: limpio });
     guardarMensaje('assistant', limpio);
     guardarProyecto(estadoProyecto);
-    registrarUso(contarPalabras(textoUsuario) + contarPalabras(parsed.respuesta));
+    registrarUso(contarPalabras(textoUsuario) + contarPalabras(parsed.respuesta), 'chat');
   } catch(err){
     removeTyping();
     const mensaje = (err.name === 'AbortError')
