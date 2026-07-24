@@ -2110,9 +2110,14 @@ async function llamarIA(textoUsuario){
     registrarActividad();
   } catch(err){
     removeTyping();
-    const mensaje = (err.name === 'AbortError')
-      ? 'El asistente tardó demasiado en responder (más de 30s). Intenta de nuevo — si se repite, revisa la terminal del backend.'
-      : 'No pude conectar con el asistente. Revisa la conexión e intenta de nuevo.';
+    let mensaje;
+    if(err.name === 'AbortError'){
+      mensaje = 'El asistente tardó demasiado en responder (más de 30s). Intenta de nuevo — si se repite, revisa la terminal del backend.';
+    } else if(err instanceof SyntaxError){
+      mensaje = 'La respuesta llegó incompleta (probablemente un capítulo muy largo). Intenta de nuevo, o pide un fragmento más corto.';
+    } else {
+      mensaje = 'No pude conectar con el asistente. Revisa la conexión e intenta de nuevo.';
+    }
     addMsg(mensaje, 'error');
     console.error('Error IA:', err);
   } finally {
