@@ -953,14 +953,53 @@ async function abrirModalLibros(){
   const { data } = await sb.from('eh_proyectos').select('*').order('updated_at', { ascending:false });
   const lista = document.getElementById('listaLibros');
   lista.innerHTML = (data && data.length)
-    ? data.map(p=>`<div class="libro-item" data-id="${p.id}"><b>${p.titulo || 'Sin título aún'}</b><span>${p.tipo || 'Proyecto nuevo'} · ${p.progreso||0}% identificado</span></div>`).join('')
+    ? data.map(p=>`
+      <div class="libro-item" data-id="${p.id}" style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+        <div style="flex:1; cursor:pointer;" class="libro-abrir">
+          <b>${p.titulo || 'Sin título aún'}</b><span>${p.tipo || 'Proyecto nuevo'} · ${p.progreso||0}% identificado</span>
+        </div>
+        <button class="libro-renombrar" data-id="${p.id}" data-titulo="${(p.titulo||'').replace(/"/g,'&quot;')}" title="Renombrar" style="background:none; border:none; cursor:pointer; font-size:1rem;">✏️</button>
+        <button class="libro-eliminar" data-id="${p.id}" title="Eliminar" style="background:none; border:none; cursor:pointer; font-size:1rem;">🗑️</button>
+      </div>
+    `).join('')
     : '<div class="vacio">Todavía no tienes libros. Crea uno con "+ Nuevo libro".</div>';
-  lista.querySelectorAll('.libro-item').forEach(el=>{
+
+  lista.querySelectorAll('.libro-abrir').forEach(el=>{
     el.addEventListener('click', async ()=>{
       document.getElementById('modalLibros').style.display = 'none';
-      await abrirProyecto(el.dataset.id);
+      await abrirProyecto(el.closest('.libro-item').dataset.id);
     });
   });
+
+  lista.querySelectorAll('.libro-renombrar').forEach(btn=>{
+    btn.addEventListener('click', async (e)=>{
+      e.stopPropagation();
+      const nuevoTitulo = prompt('Nuevo título del libro:', btn.dataset.titulo || '');
+      if(nuevoTitulo === null || nuevoTitulo.trim() === '') return;
+      await sb.from('eh_proyectos').update({ titulo: nuevoTitulo.trim() }).eq('id', btn.dataset.id);
+      if(btn.dataset.id === proyectoActualId){
+        estadoProyecto.titulo = nuevoTitulo.trim();
+        document.getElementById('pTitulo').textContent = estadoProyecto.titulo;
+      }
+      abrirModalLibros();
+    });
+  });
+
+  lista.querySelectorAll('.libro-eliminar').forEach(btn=>{
+    btn.addEventListener('click', async (e)=>{
+      e.stopPropagation();
+      if(!confirm('¿Eliminar este libro por completo? Esta acción no se puede deshacer — se borran también sus mensajes y capítulos.')) return;
+      await sb.from('eh_proyectos').delete().eq('id', btn.dataset.id);
+      if(btn.dataset.id === proyectoActualId){
+        proyectoActualId = null;
+        document.getElementById('modalLibros').style.display = 'none';
+        mostrarInicio();
+      } else {
+        abrirModalLibros();
+      }
+    });
+  });
+
   document.getElementById('modalLibros').style.display = 'flex';
 }
 document.querySelectorAll('.nav-item[title]')[0].addEventListener('click', abrirModalLibros); // "Mis libros"
