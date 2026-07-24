@@ -29,6 +29,12 @@
   .vista-inicio-header{ margin-bottom:28px; }
   .vista-inicio-header h1{ font-family:'Poppins',sans-serif; font-size:1.5rem; margin-bottom:4px; }
   .vista-inicio-header p{ font-size:0.85rem; color:#5a665e; }
+  .progreso-escritor{ background:var(--papel-claro); border:1px solid var(--linea); border-radius:12px; padding:18px 22px; margin-top:18px; max-width:480px; }
+  .progreso-escritor .fila-top{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
+  .progreso-escritor .meta-txt{ font-size:0.78rem; font-weight:600; color:var(--ink); }
+  .progreso-escritor .pct-txt{ font-family:'Poppins',sans-serif; font-size:1.1rem; color:var(--oro); font-weight:700; }
+  .progreso-escritor .barra-fondo{ background:var(--papel); border-radius:20px; height:10px; overflow:hidden; }
+  .progreso-escritor .barra{ background:var(--oro); height:100%; border-radius:20px; transition:width .4s ease; }
   .grid-modulos{ display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:16px; }
   .tarjeta-modulo{
     background:var(--papel-claro); border:1px solid var(--linea); border-radius:14px; padding:22px 20px;
@@ -39,6 +45,20 @@
   .tarjeta-modulo h3{ font-family:'Poppins',sans-serif; font-size:1rem; color:var(--ink); margin-bottom:6px; }
   .tarjeta-modulo p{ font-size:0.8rem; color:#5a665e; line-height:1.45; }
   .vista-oculta{ display:none !important; }
+
+  .capitulo-item{ border:1px solid var(--linea); border-radius:10px; padding:16px; margin-bottom:14px; background:var(--papel-claro); }
+  .capitulo-item input.titulo-capitulo{ width:100%; font-family:'Poppins',sans-serif; font-weight:600; font-size:0.95rem; border:none; border-bottom:1px solid var(--linea); padding:4px 0 8px; margin-bottom:10px; background:transparent; }
+  .capitulo-item textarea.contenido-capitulo{ width:100%; min-height:140px; border:1px solid var(--linea); border-radius:6px; padding:10px; font-family:'Inter',sans-serif; font-size:0.85rem; line-height:1.55; resize:vertical; }
+  .capitulo-item .meta-capitulo{ font-size:0.72rem; color:#8a8478; margin-top:6px; display:flex; justify-content:space-between; }
+  .capitulo-item .borrar-capitulo{ color:var(--vino); background:none; border:none; cursor:pointer; font-size:0.75rem; font-weight:600; }
+
+  .opcion-genero{
+    text-align:left; padding:13px 16px; border:1px solid var(--linea); border-radius:8px; background:var(--papel-claro);
+    cursor:pointer; font-family:'Inter',sans-serif; font-size:0.88rem; transition:border-color .15s, background .15s;
+  }
+  .opcion-genero:hover{ border-color:var(--oro); background:#fff; }
+  .opcion-genero b{ display:block; font-size:0.9rem; margin-bottom:2px; }
+  .opcion-genero span{ font-size:0.78rem; color:#8a8478; }
   .btn-menu-movil{ display:none; }
   @media (max-width: 880px){
     html, body{ overflow:hidden; width:100%; }
@@ -257,8 +277,19 @@
       <div class="vista-inicio-header">
         <h1>Tu escritorio</h1>
         <p>Elige un módulo para continuar con tu proyecto.</p>
+        <div class="progreso-escritor">
+          <div class="fila-top">
+            <span class="meta-txt" id="progresoMetaTexto">0 / 50.000 palabras escritas</span>
+            <span class="pct-txt" id="progresoMetaPct">0%</span>
+          </div>
+          <div class="barra-fondo"><div class="barra" id="progresoMetaBarra" style="width:0%"></div></div>
+        </div>
       </div>
       <div class="grid-modulos">
+        <div class="tarjeta-modulo" data-modulo="manuscrito" style="border-color:var(--oro);">
+          <span class="icono">📖</span><h3>Mi Manuscrito</h3>
+          <p>Tu libro completo, capítulo por capítulo, en un solo documento.</p>
+        </div>
         <div class="tarjeta-modulo" data-modulo="escritura">
           <span class="icono">✍️</span><h3>Escritura</h3>
           <p>Conversa con tu Director Editorial y escribe con ayuda de IA.</p>
@@ -575,6 +606,28 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="modalGenero" style="display:none;">
+  <div class="modal-box">
+    <h3>¿Qué quieres escribir?</h3>
+    <p style="font-size:0.82rem; color:#5a665e; margin-bottom:16px;">Elige lo que más se acerque — el Director Editorial arranca la conversación ya orientado a tu tipo de libro.</p>
+    <div id="opcionesGenero" style="display:flex; flex-direction:column; gap:8px;"></div>
+    <button class="modal-cerrar" id="cancelarModalGenero">Cancelar</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalManuscrito" style="display:none;">
+  <div class="modal-box modal-ancho" style="max-width:760px; max-height:82vh;">
+    <h3>Mi Manuscrito</h3>
+    <p style="font-size:0.82rem; color:#5a665e; margin-bottom:14px;">Cada capítulo que el Director Editorial escribe contigo se guarda aquí automáticamente. Puedes editar el texto directo, y enviarlo a Maquetación cuando esté listo.</p>
+    <div id="listaCapitulos"></div>
+    <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
+      <button class="herr-btn" id="btnGuardarManuscrito">💾 Guardar cambios</button>
+      <button class="herr-btn" id="btnEnviarAMaquetacion" style="background:var(--verde); color:#fff;">📐 Enviar todo a Maquetación</button>
+    </div>
+    <button class="modal-cerrar" id="cerrarModalManuscrito">Cerrar</button>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modalMarketing" style="display:none;">
   <div class="modal-box modal-ancho">
     <h3>Marketing para tu libro</h3>
@@ -622,6 +675,7 @@ FORMATO DE SALIDA — CRÍTICO:
 Responde ÚNICAMENTE con un objeto JSON válido, sin backticks, sin markdown, sin texto antes o después. Estructura exacta:
 {
   "respuesta": "tu respuesta conversacional en español, la que verá el usuario en el chat",
+  "capitulo": null o {"titulo": "título breve del capítulo o fragmento", "contenido": "el texto narrativo completo, limpio, listo para el manuscrito final — SIN tus comentarios editoriales mezclados"},
   "proyecto": {
     "titulo": "título de trabajo corto para el proyecto, o null si aún no hay suficiente info",
     "tipo": "ej. Autobiografía, Novela romántica, Thriller, Ensayo, etc. o null",
@@ -633,10 +687,11 @@ Responde ÚNICAMENTE con un objeto JSON válido, sin backticks, sin markdown, si
     "eventos": [{"nombre":"...", "descripcion":"qué ocurrió"}]
   }
 }
+El campo "capitulo" debe llenarse SOLO cuando en tu "respuesta" escribiste texto narrativo real del libro (una escena, un capítulo, un fragmento largo de prosa) — no lo llenes cuando solo estás haciendo preguntas de descubrimiento o comentando. Cuando sí escribas contenido narrativo, el campo "contenido" debe tener SOLO el texto limpio del capítulo (sin las preguntas ni comentarios que lo rodeen en tu "respuesta"), para que se pueda guardar directo en el manuscrito del usuario.
 El campo "progreso" es un número de 0 a 100 que refleja cuánto se conoce del proyecto en total; debe subir de forma acumulativa turno a turno, nunca bajar salvo que el usuario contradiga algo dicho antes. Los arrays "personas" y "eventos" deben ser ACUMULATIVOS: incluye siempre las personas/eventos ya identificados en turnos anteriores más los nuevos, no los reemplaces.`;
 
 let historial = [];
-let estadoProyecto = { titulo:null, tipo:null, objetivo:null, tono:null, resumen:null, progreso:0, personas:[], eventos:[], kdp_checklist:{} };
+let estadoProyecto = { titulo:null, tipo:null, objetivo:null, tono:null, resumen:null, progreso:0, personas:[], eventos:[], kdp_checklist:{}, capitulos:[] };
 let proyectoActualId = null;
 let usuarioActual = null;
 
@@ -768,15 +823,50 @@ async function arrancarSesion(){
   }
 }
 
+const GENEROS = [
+  { tipo:'Autobiografía / Memorias', desc:'La historia de tu vida o la de alguien cercano', bienvenida:'Perfecto, vamos a construir tu historia. Cuéntame libremente: ¿qué momento sientes que es el corazón de todo esto, lo que hace que quieras contarlo?' },
+  { tipo:'Novela / Ficción', desc:'Una historia inventada, con personajes propios', bienvenida:'Genial, empecemos a construir tu historia. Cuéntame: ¿qué género dentro de la ficción te imaginas (romance, thriller, fantasía, drama...) y cuál es la idea que no te deja en paz?' },
+  { tipo:'No ficción / Ensayo', desc:'Un libro para enseñar, argumentar o compartir conocimiento', bienvenida:'Perfecto. Para un libro de no ficción, lo primero es la tesis: ¿qué quieres que tu lector entienda o pueda hacer distinto después de leerlo?' },
+  { tipo:'Infantil', desc:'Una historia para niños', bienvenida:'¡Qué lindo! Cuéntame: ¿para qué edad es tu historia, y qué personaje la protagoniza?' },
+  { tipo:'Poesía', desc:'Una colección de poemas', bienvenida:'Hermoso. Cuéntame qué tema o sentimiento atraviesa los poemas que quieres reunir — ¿es un solo hilo, o varios?' },
+  { tipo:null, desc:'Todavía no lo sé, quiero explorar', bienvenida:'Hola. Soy tu Director Editorial. Cuéntame libremente qué deseas escribir. Recordaré de quién hablamos, qué ocurrió y cómo se relacionan los acontecimientos.' }
+];
+
+function mostrarModalGenero(){
+  const cont = document.getElementById('opcionesGenero');
+  cont.innerHTML = GENEROS.map((g, i) => `
+    <button class="opcion-genero" data-indice="${i}">
+      <b>${g.tipo || 'Explorar libremente'}</b><span>${g.desc}</span>
+    </button>
+  `).join('');
+  cont.querySelectorAll('.opcion-genero').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const genero = GENEROS[parseInt(btn.dataset.indice)];
+      document.getElementById('modalGenero').style.display = 'none';
+      await crearProyectoConGenero(genero);
+    });
+  });
+  document.getElementById('modalGenero').style.display = 'flex';
+}
+
 async function crearProyecto(){
+  mostrarModalGenero();
+}
+
+document.getElementById('cancelarModalGenero').addEventListener('click', ()=>{
+  document.getElementById('modalGenero').style.display = 'none';
+});
+
+async function crearProyectoConGenero(genero){
   const { data, error } = await sb.from('eh_proyectos').insert({ usuario_id: usuarioActual.id }).select().single();
   if(error){ console.error(error); addMsg('No se pudo crear el proyecto en la base de datos.', 'error'); return; }
   proyectoActualId = data.id;
   historial = [];
-  estadoProyecto = { titulo:null, tipo:null, objetivo:null, tono:null, resumen:null, progreso:0, personas:[], eventos:[], kdp_checklist:{} };
+  estadoProyecto = { titulo:null, tipo:genero.tipo, objetivo:null, tono:null, resumen:null, progreso:0, personas:[], eventos:[], kdp_checklist:{}, capitulos:[] };
   chatScroll.innerHTML = '';
   actualizarPanel({});
-  iniciar();
+  iniciar(genero.bienvenida);
+  mostrarChat();
 }
 
 async function abrirProyecto(id){
@@ -805,7 +895,7 @@ async function abrirProyecto(id){
   actualizarPanel({
     titulo: proyecto.titulo, tipo: proyecto.tipo, objetivo: proyecto.objetivo, tono: proyecto.tono,
     resumen: proyecto.resumen, progreso: proyecto.progreso, personas: proyecto.personas || [], eventos: proyecto.eventos || [],
-    kdp_checklist: proyecto.kdp_checklist || {}
+    kdp_checklist: proyecto.kdp_checklist || {}, capitulos: proyecto.capitulos || []
   });
 }
 
@@ -818,7 +908,7 @@ async function guardarProyecto(p){
   if(!proyectoActualId) return;
   await sb.from('eh_proyectos').update({
     titulo: p.titulo, tipo: p.tipo, objetivo: p.objetivo, tono: p.tono, resumen: p.resumen,
-    progreso: p.progreso, personas: p.personas, eventos: p.eventos, updated_at: new Date().toISOString()
+    progreso: p.progreso, personas: p.personas, eventos: p.eventos, capitulos: p.capitulos, updated_at: new Date().toISOString()
   }).eq('id', proyectoActualId);
 }
 
@@ -1232,6 +1322,7 @@ document.querySelectorAll('.tarjeta-modulo').forEach(tarjeta=>{
   tarjeta.addEventListener('click', ()=>{
     const modulo = tarjeta.dataset.modulo;
     switch(modulo){
+      case 'manuscrito': abrirManuscrito(); break;
       case 'escritura': mostrarChat(); break;
       case 'proyecto': abrirPanelEnTab('proyecto'); break;
       case 'personajes': abrirPanelEnTab('contexto'); break;
@@ -1303,6 +1394,67 @@ Tres ideas concretas y distintas de posts para promocionar el libro antes/durant
 
 document.getElementById('navMarketing').addEventListener('click', ()=>{
   document.getElementById('modalMarketing').style.display = 'flex';
+});
+
+// ---- Mi Manuscrito ----
+function renderManuscrito(){
+  const lista = document.getElementById('listaCapitulos');
+  if(!estadoProyecto.capitulos.length){
+    lista.innerHTML = '<p style="font-size:0.85rem; color:#8a8478;">Todavía no hay capítulos guardados. Escribe con el Director Editorial y aparecerán aquí automáticamente.</p>';
+    return;
+  }
+  lista.innerHTML = estadoProyecto.capitulos.map((c, i) => `
+    <div class="capitulo-item" data-indice="${i}">
+      <input type="text" class="titulo-capitulo" value="${(c.titulo||'').replace(/"/g,'&quot;')}">
+      <textarea class="contenido-capitulo">${c.contenido||''}</textarea>
+      <div class="meta-capitulo">
+        <span>${contarPalabras(c.contenido||'')} palabras</span>
+        <button class="borrar-capitulo" data-indice="${i}">Eliminar capítulo</button>
+      </div>
+    </div>
+  `).join('');
+
+  lista.querySelectorAll('.borrar-capitulo').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const idx = parseInt(btn.dataset.indice);
+      if(confirm('¿Eliminar este capítulo del manuscrito?')){
+        estadoProyecto.capitulos.splice(idx, 1);
+        renderManuscrito();
+      }
+    });
+  });
+}
+
+function abrirManuscrito(){
+  renderManuscrito();
+  document.getElementById('modalManuscrito').style.display = 'flex';
+}
+
+document.getElementById('cerrarModalManuscrito').addEventListener('click', ()=> document.getElementById('modalManuscrito').style.display = 'none');
+
+document.getElementById('btnGuardarManuscrito').addEventListener('click', async ()=>{
+  const items = document.querySelectorAll('#listaCapitulos .capitulo-item');
+  const nuevos = Array.from(items).map(item => ({
+    titulo: item.querySelector('.titulo-capitulo').value,
+    contenido: item.querySelector('.contenido-capitulo').value
+  }));
+  estadoProyecto.capitulos = nuevos;
+  const btn = document.getElementById('btnGuardarManuscrito');
+  btn.disabled = true; btn.textContent = 'Guardando…';
+  await guardarProyecto(estadoProyecto);
+  btn.disabled = false; btn.textContent = '✅ Guardado';
+  setTimeout(()=> btn.textContent = '💾 Guardar cambios', 1800);
+});
+
+document.getElementById('btnEnviarAMaquetacion').addEventListener('click', ()=>{
+  // Primero guarda cualquier edición pendiente
+  document.getElementById('btnGuardarManuscrito').click();
+  const textoCompleto = estadoProyecto.capitulos
+    .map(c => `Capítulo: ${c.titulo}\n\n${c.contenido}`)
+    .join('\n\n');
+  document.getElementById('modalManuscrito').style.display = 'none';
+  document.getElementById('formatoInput').value = textoCompleto;
+  document.getElementById('modalFormato').style.display = 'flex';
 });
 
 // ---- Mejorar plan: checkout real con Stripe ----
@@ -1565,10 +1717,33 @@ function streamTexto(texto){
   }, 12);
 }
 
+const META_PALABRAS_LIBRO = 50000;
+
+function actualizarProgresoEscritor(){
+  const total = estadoProyecto.capitulos.reduce((sum, c) => sum + contarPalabras(c.contenido || ''), 0);
+  const pct = Math.min(100, Math.round((total / META_PALABRAS_LIBRO) * 100));
+  const elTexto = document.getElementById('progresoMetaTexto');
+  const elPct = document.getElementById('progresoMetaPct');
+  const elBarra = document.getElementById('progresoMetaBarra');
+  if(elTexto) elTexto.textContent = `${total.toLocaleString('es')} / ${META_PALABRAS_LIBRO.toLocaleString('es')} palabras escritas`;
+  if(elPct) elPct.textContent = pct + '%';
+  if(elBarra) elBarra.style.width = pct + '%';
+}
+
+function guardarCapitulo(titulo, contenido){
+  const existente = estadoProyecto.capitulos.findIndex(c => c.titulo === titulo);
+  if(existente >= 0){
+    estadoProyecto.capitulos[existente].contenido = contenido;
+  } else {
+    estadoProyecto.capitulos.push({ titulo, contenido });
+  }
+}
+
 function actualizarPanel(p){
   estadoProyecto = { ...estadoProyecto, ...p,
     personas: (p.personas && p.personas.length) ? p.personas : estadoProyecto.personas,
-    eventos: (p.eventos && p.eventos.length) ? p.eventos : estadoProyecto.eventos
+    eventos: (p.eventos && p.eventos.length) ? p.eventos : estadoProyecto.eventos,
+    capitulos: (p.capitulos && p.capitulos.length) ? p.capitulos : estadoProyecto.capitulos
   };
   document.getElementById('pTitulo').textContent = estadoProyecto.titulo || 'Sin título aún';
   document.getElementById('pTipo').textContent = estadoProyecto.tipo || '—';
@@ -1588,6 +1763,8 @@ function actualizarPanel(p){
   listaE.innerHTML = estadoProyecto.eventos.length
     ? estadoProyecto.eventos.map(e=>`<div class="evento"><b>${e.nombre}</b><span>${e.descripcion||''}</span></div>`).join('')
     : '<div class="vacio">Todavía no hay acontecimientos registrados.</div>';
+
+  actualizarProgresoEscritor();
 }
 
 async function llamarIA(textoUsuario){
@@ -1615,6 +1792,10 @@ async function llamarIA(textoUsuario){
 
     streamTexto(parsed.respuesta);
     actualizarPanel(parsed.proyecto || {});
+    if(parsed.capitulo && parsed.capitulo.contenido){
+      guardarCapitulo(parsed.capitulo.titulo || `Capítulo ${estadoProyecto.capitulos.length + 1}`, parsed.capitulo.contenido);
+      actualizarProgresoEscritor();
+    }
     historial.push({ role:'assistant', content: limpio });
     guardarMensaje('assistant', limpio);
     guardarProyecto(estadoProyecto);
@@ -1668,10 +1849,11 @@ document.querySelectorAll('.tab').forEach(t=>{
   });
 });
 
-function iniciar(){
-  addMsg('Hola. Soy tu Director Editorial. Cuéntame libremente qué deseas escribir. Recordaré de quién hablamos, qué ocurrió y cómo se relacionan los acontecimientos.', 'bot');
+function iniciar(mensajeBienvenida){
+  const texto = mensajeBienvenida || 'Hola. Soy tu Director Editorial. Cuéntame libremente qué deseas escribir. Recordaré de quién hablamos, qué ocurrió y cómo se relacionan los acontecimientos.';
+  addMsg(texto, 'bot');
   historial.push({ role:'user', content:'(inicio de conversación, aún no he dicho nada)' });
-  historial.push({ role:'assistant', content: JSON.stringify({respuesta:'Hola. Soy tu Director Editorial. Cuéntame libremente qué deseas escribir. Recordaré de quién hablamos, qué ocurrió y cómo se relacionan los acontecimientos.', proyecto:estadoProyecto}) });
+  historial.push({ role:'assistant', content: JSON.stringify({respuesta:texto, proyecto:estadoProyecto}) });
   guardarMensaje('user', '(inicio de conversación, aún no he dicho nada)');
   guardarMensaje('assistant', historial[historial.length-1].content);
 }
