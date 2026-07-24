@@ -107,7 +107,7 @@
   .pipeline{ background:var(--verde); color:var(--papel-claro); }
   .pipeline .section-head p{ color:#c9d3cb; }
   .pipeline .eyebrow{ color:var(--oro-claro); }
-  .pasos{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:rgba(248,244,232,0.15); border:1px solid rgba(248,244,232,0.15); }
+  .pasos{ display:grid; grid-template-columns:repeat(auto-fill, minmax(230px, 1fr)); gap:1px; background:rgba(248,244,232,0.15); border:1px solid rgba(248,244,232,0.15); }
   .paso{ background:var(--verde); padding:32px 26px; }
   .paso .num{ font-family:'Poppins',sans-serif; font-size:2.2rem; color:var(--oro-claro); font-weight:500; display:block; margin-bottom:18px; }
   .paso h3{ font-size:1.15rem; margin-bottom:10px; color:var(--papel-claro); }
@@ -240,7 +240,6 @@
 
   @media(max-width:880px){
     .hero{ grid-template-columns:1fr; }
-    .pasos{ grid-template-columns:1fr 1fr; }
     .planes{ grid-template-columns:1fr; }
     .app-body{ grid-template-columns:1fr; }
     .app-editor{ border-right:none; border-bottom:1px solid var(--linea); }
@@ -288,30 +287,75 @@
 <section class="pipeline" id="proceso">
   <div class="wrap">
     <div class="section-head">
-      <span class="eyebrow u">El camino del autor</span>
-      <h2>Cuatro etapas, un solo lugar</h2>
-      <p>Cada libro sigue el mismo recorrido. Nosotros lo hacemos más simple, más rápido y sin depender de diez herramientas distintas.</p>
+      <span class="eyebrow u">Todo lo que necesita un escritor</span>
+      <h2>13 módulos, un solo lugar</h2>
+      <p>Nada de saltar entre diez herramientas distintas. LibroOS conecta cada etapa de tu libro — y la IA recuerda todo tu proyecto en cada una.</p>
     </div>
     <div class="pasos">
       <div class="paso">
-        <span class="num">01</span>
-        <h3>Inspírate y escribe</h3>
-        <p>Genera ideas, desarrolla personajes y tramas, y escribe con un asistente de IA entrenado en narrativa en español.</p>
+        <span class="num" style="font-size:1.6rem;">📖</span>
+        <h3>Mi Manuscrito</h3>
+        <p>Tu libro completo, capítulo por capítulo, en un solo documento editable.</p>
       </div>
       <div class="paso">
-        <span class="num">02</span>
-        <h3>Corrige</h3>
-        <p>Corrección ortográfica, de estilo y de ritmo. La IA señala en el margen, como un editor real, qué mejorar y por qué.</p>
+        <span class="num" style="font-size:1.6rem;">✍️</span>
+        <h3>Escritura</h3>
+        <p>Conversa con tu Director Editorial y escribe con ayuda de IA que recuerda tu proyecto.</p>
       </div>
       <div class="paso">
-        <span class="num">03</span>
-        <h3>Diseña y maqueta</h3>
-        <p>Portada generada con IA y maquetación automática lista para tapa blanda, tapa dura o ebook.</p>
+        <span class="num" style="font-size:1.6rem;">📚</span>
+        <h3>Proyecto del libro</h3>
+        <p>Tipo, objetivo, tono y resumen de tu obra, siempre a la vista.</p>
       </div>
       <div class="paso">
-        <span class="num">04</span>
-        <h3>Publica en KDP</h3>
-        <p>Exporta en los formatos exactos que exige Amazon KDP, con checklist guiado paso a paso hasta la publicación.</p>
+        <span class="num" style="font-size:1.6rem;">👥</span>
+        <h3>Personajes</h3>
+        <p>Quiénes aparecen en tu historia y su rol en ella, identificados solos.</p>
+      </div>
+      <div class="paso">
+        <span class="num" style="font-size:1.6rem;">📅</span>
+        <h3>Cronología</h3>
+        <p>Los acontecimientos de tu historia, ordenados automáticamente.</p>
+      </div>
+      <div class="paso">
+        <span class="num" style="font-size:1.6rem;">✏️</span>
+        <h3>Editor inteligente</h3>
+        <p>Corrección de ortografía, tildes, puntuación y concordancia al instante.</p>
+      </div>
+      <div class="paso">
+        <span class="num" style="font-size:1.6rem;">🌍</span>
+        <h3>Traducciones</h3>
+        <p>Inglés, alemán, italiano, francés y portugués, con voz y tono cuidados.</p>
+      </div>
+      <div class="paso">
+        <span class="num" style="font-size:1.6rem;">🎨</span>
+        <h3>Portadas e ilustraciones</h3>
+        <p>Medidas exactas para imprenta, o genera el arte con IA a partir de tu historia.</p>
+      </div>
+      <div class="paso">
+        <span class="num" style="font-size:1.6rem;">📐</span>
+        <h3>Maquetación</h3>
+        <p>Márgenes y sangrado según las normas de KDP. Exporta a PDF, Word o EPUB.</p>
+      </div>
+      <div class="paso">
+        <span class="num" style="font-size:1.6rem;">🚀</span>
+        <h3>Publicación</h3>
+        <p>Checklist completo de KDP, con metadatos y palabras clave generados por IA.</p>
+      </div>
+      <div class="paso">
+        <span class="num" style="font-size:1.6rem;">📈</span>
+        <h3>Marketing</h3>
+        <p>Frase gancho, ideas de posts e imágenes para redes, listas para publicar.</p>
+      </div>
+      <div class="paso">
+        <span class="num" style="font-size:1.6rem;">💰</span>
+        <h3>Ventas y regalías</h3>
+        <p>Cuánto te queda por venta, según tu precio, formato e impresión.</p>
+      </div>
+      <div class="paso">
+        <span class="num" style="font-size:1.6rem;">🎤</span>
+        <h3>Dictado y Audiolibro</h3>
+        <p>Habla en vez de escribir, y convierte tus capítulos en audio narrado por IA.</p>
       </div>
     </div>
   </div>
@@ -408,24 +452,22 @@
       <div class="servicios-lista">
         <div class="servicio-item">
           <div><h4>Diseño de portada profesional</h4><p class="u">Portada hecha por un diseñador, no solo generada por IA. 2 rondas de ajustes incluidas.</p></div>
-          <div class="servicio-precio u">€69<br><span style="font-size:0.68rem; font-weight:400; color:#8a8478;">base €57,98 sin IVA</span></div>
+          <div class="servicio-precio u">€59</div>
         </div>
         <div class="servicio-item">
           <div><h4>Maquetación editorial completa</h4><p class="u">Interior del libro maquetado a mano para tapa blanda y tapa dura, listo para imprimir.</p></div>
-          <div class="servicio-precio u">€99<br><span style="font-size:0.68rem; font-weight:400; color:#8a8478;">base €83,19 sin IVA</span></div>
+          <div class="servicio-precio u">€89</div>
         </div>
         <div class="servicio-item">
           <div><h4>Corrección profesional humana</h4><p class="u">Un corrector de estilo revisa el manuscrito completo tras el paso de la IA.</p></div>
-          <div class="servicio-precio u">€0,007 / palabra<br><span style="font-size:0.68rem; font-weight:400; color:#8a8478;">base €0,00588 sin IVA</span></div>
+          <div class="servicio-precio u">€0,006 / palabra</div>
         </div>
         <div class="servicio-item">
           <div><h4>Publicación asistida en KDP</h4><p class="u">Te acompañamos en videollamada mientras publicas tu libro en Amazon por primera vez.</p></div>
-          <div class="servicio-precio u">€39 / sesión<br><span style="font-size:0.68rem; font-weight:400; color:#8a8478;">base €32,77 sin IVA</span></div>
+          <div class="servicio-precio u">€35 / sesión</div>
         </div>
       </div>
     </div>
-
-    <p style="font-size:0.72rem; color:#8a8478; text-align:center; margin-top:14px;">Precios finales, IVA del 19% incluido conforme a la legislación alemana.</p>
   </div>
 </section>
 
