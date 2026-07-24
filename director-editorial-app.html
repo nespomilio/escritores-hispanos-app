@@ -297,6 +297,10 @@
           <span class="icono">📖</span><h3>Mi Manuscrito</h3>
           <p>Tu libro completo, capítulo por capítulo, en un solo documento.</p>
         </div>
+        <div class="tarjeta-modulo" data-modulo="dictado">
+          <span class="icono">🎤</span><h3>Dictado por voz</h3>
+          <p>Habla en vez de escribir — se transcribe directo a tu manuscrito.</p>
+        </div>
         <div class="tarjeta-modulo" data-modulo="audiolibro">
           <span class="icono">🎧</span><h3>Audiolibro</h3>
           <p>Convierte tus capítulos en audio narrado con IA.</p>
@@ -624,6 +628,19 @@
     <p style="font-size:0.82rem; color:#5a665e; margin-bottom:16px;">Elige lo que más se acerque — el Director Editorial arranca la conversación ya orientado a tu tipo de libro.</p>
     <div id="opcionesGenero" style="display:flex; flex-direction:column; gap:8px;"></div>
     <button class="modal-cerrar" id="cancelarModalGenero">Cancelar</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalDictado" style="display:none;">
+  <div class="modal-box modal-ancho">
+    <h3>Dictado por voz</h3>
+    <p style="font-size:0.82rem; color:#5a665e; margin-bottom:16px;">Graba tu voz contando una escena, un recuerdo o una idea — se transcribe a texto automáticamente. Tu navegador te va a pedir permiso para usar el micrófono.</p>
+    <div style="text-align:center; padding:20px 0;">
+      <button id="btnGrabar" style="width:84px; height:84px; border-radius:50%; background:var(--vino); border:none; color:#fff; font-size:1.8rem; cursor:pointer;">🎤</button>
+      <div id="estadoGrabacion" style="margin-top:12px; font-size:0.85rem; color:#5a665e;">Toca para empezar a grabar</div>
+    </div>
+    <div id="resultadoDictado"></div>
+    <button class="modal-cerrar" id="cerrarModalDictado">Cerrar</button>
   </div>
 </div>
 
@@ -1398,6 +1415,7 @@ document.querySelectorAll('.tarjeta-modulo').forEach(tarjeta=>{
   tarjeta.addEventListener('click', ()=>{
     const modulo = tarjeta.dataset.modulo;
     switch(modulo){
+      case 'dictado': abrirDictado(); break;
       case 'audiolibro': abrirAudiolibro(); break;
       case 'manuscrito': abrirManuscrito(); break;
       case 'escritura': mostrarChat(); break;
@@ -1455,11 +1473,15 @@ Tres ideas concretas y distintas de posts para promocionar el libro antes/durant
     });
     const data = await response.json();
     const texto = (data.content || []).map(b => b.text || '').join('');
-    resultado.innerHTML = `<div class="herr-resultado">${texto.replace(/</g,'&lt;')}</div><button class="copiar-btn" id="btnCopiarMarketing">Copiar todo</button>`;
+    resultado.innerHTML = `<div class="herr-resultado">${texto.replace(/</g,'&lt;')}</div>
+      <button class="copiar-btn" id="btnCopiarMarketing">Copiar todo</button>
+      <button class="herr-btn" id="btnImagenMarketing" style="margin-top:10px; display:block; background:var(--verde); color:#fff;">🎨 Generar imagen para redes</button>
+      <div id="imagenMarketingResultado"></div>`;
     document.getElementById('btnCopiarMarketing').addEventListener('click', ()=>{
       navigator.clipboard.writeText(texto);
       document.getElementById('btnCopiarMarketing').textContent = '¡Copiado!';
     });
+    document.getElementById('btnImagenMarketing').addEventListener('click', () => generarImagenMarketing(texto));
     registrarUso(contarPalabras(contexto) + contarPalabras(texto), 'marketing');
   } catch(err){
     resultado.innerHTML = `<div class="herr-resultado">No se pudo generar. Revisa tu conexión e intenta de nuevo.</div>`;
@@ -1468,6 +1490,49 @@ Tres ideas concretas y distintas de posts para promocionar el libro antes/durant
     btn.disabled = false; btn.textContent = '✨ Generar ideas de marketing';
   }
 });
+
+async function generarImagenMarketing(textoMarketing){
+  const resultado = document.getElementById('imagenMarketingResultado');
+  const btn = document.getElementById('btnImagenMarketing');
+
+  if(estadoUso.plan === 'gratis'){
+    resultado.innerHTML = `<div class="herr-resultado" style="margin-top:8px;">Las imágenes de marketing son una función de los planes Pro y Premium. <a href="#" onclick="document.getElementById('modalMejorarPlan').style.display='flex'; return false;">Mejora tu plan →</a></div>`;
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Generando…';
+  resultado.innerHTML = `<div class="herr-resultado" style="margin-top:8px;">Diseñando la imagen…</div>`;
+
+  const fraseGancho = (textoMarketing.split('=== DESCRIPCIÓN')[0] || '').replace('=== FRASE GANCHO ===', '').trim();
+  const prompt = `Imagen promocional para redes sociales anunciando un libro, formato cuadrado, sin texto ni letras, estilo editorial atractivo y profesional. Tipo de libro: ${estadoProyecto.tipo || 'general'}. Tono: ${estadoProyecto.tono || 'narrativo'}. Inspirada en esta idea: ${fraseGancho || estadoProyecto.resumen || ''}`;
+
+  try{
+    const response = await fetch("https://escritores-hispanos-backend.onrender.com/api/imagen", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt, size: '1024x1024' })
+    });
+    const data = await response.json();
+    if(!response.ok) throw new Error(data.error?.error?.message || data.error || 'Error desconocido');
+
+    const b64 = data.data[0].b64_json;
+    resultado.innerHTML = `
+      <img src="data:image/png;base64,${b64}" style="width:100%; max-width:280px; border-radius:8px; border:1px solid var(--linea); margin-top:10px; display:block;">
+      <button class="copiar-btn" id="btnDescargarImagenMarketing" style="margin-top:8px;">⬇️ Descargar imagen</button>
+    `;
+    document.getElementById('btnDescargarImagenMarketing').addEventListener('click', ()=>{
+      const a = document.createElement('a');
+      a.href = `data:image/png;base64,${b64}`;
+      a.download = 'imagen-marketing.png';
+      a.click();
+    });
+    registrarUso(0, 'imagen_marketing');
+  } catch(err){
+    resultado.innerHTML = `<div class="herr-resultado" style="margin-top:8px;">No se pudo generar: ${err.message}</div>`;
+    console.error(err);
+  } finally {
+    btn.disabled = false; btn.textContent = '🎨 Generar imagen para redes';
+  }
+}
 
 document.getElementById('navMarketing').addEventListener('click', ()=>{
   document.getElementById('modalMarketing').style.display = 'flex';
@@ -1486,10 +1551,18 @@ function renderManuscrito(){
       <textarea class="contenido-capitulo">${c.contenido||''}</textarea>
       <div class="meta-capitulo">
         <span>${contarPalabras(c.contenido||'')} palabras</span>
-        <button class="borrar-capitulo" data-indice="${i}">Eliminar capítulo</button>
+        <span>
+          <button class="ilustrar-capitulo" data-indice="${i}" style="background:none; border:1px solid var(--verde); color:var(--verde); border-radius:14px; padding:4px 10px; font-size:0.72rem; cursor:pointer; margin-right:8px;">🎨 Ilustrar</button>
+          <button class="borrar-capitulo" data-indice="${i}">Eliminar capítulo</button>
+        </span>
       </div>
+      <div id="ilustracionResultado-${i}"></div>
     </div>
   `).join('');
+
+  lista.querySelectorAll('.ilustrar-capitulo').forEach(btn=>{
+    btn.addEventListener('click', () => ilustrarCapitulo(parseInt(btn.dataset.indice)));
+  });
 
   lista.querySelectorAll('.borrar-capitulo').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -1541,6 +1614,104 @@ function renderAudiolibro(){
   });
 }
 
+let grabadora = null;
+let fragmentosAudio = [];
+let grabando = false;
+
+function abrirDictado(){
+  document.getElementById('resultadoDictado').innerHTML = '';
+  document.getElementById('estadoGrabacion').textContent = 'Toca para empezar a grabar';
+  document.getElementById('modalDictado').style.display = 'flex';
+}
+document.getElementById('cerrarModalDictado').addEventListener('click', ()=>{
+  if(grabando) detenerGrabacion();
+  document.getElementById('modalDictado').style.display = 'none';
+});
+
+document.getElementById('btnGrabar').addEventListener('click', async ()=>{
+  if(grabando){ detenerGrabacion(); return; }
+
+  if(estadoUso.plan === 'gratis'){
+    document.getElementById('resultadoDictado').innerHTML = `<div class="herr-resultado">El dictado por voz es una función de los planes Pro y Premium. <a href="#" onclick="document.getElementById('modalMejorarPlan').style.display='flex'; return false;">Mejora tu plan →</a></div>`;
+    return;
+  }
+
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    fragmentosAudio = [];
+    grabadora = new MediaRecorder(stream);
+    grabadora.ondataavailable = (e) => fragmentosAudio.push(e.data);
+    grabadora.onstop = enviarADictado;
+    grabadora.start();
+    grabando = true;
+    document.getElementById('btnGrabar').textContent = '⏹️';
+    document.getElementById('btnGrabar').style.background = 'var(--ink)';
+    document.getElementById('estadoGrabacion').textContent = '🔴 Grabando… toca de nuevo para terminar';
+  } catch(err){
+    document.getElementById('estadoGrabacion').textContent = 'No se pudo acceder al micrófono. Revisa los permisos de tu navegador.';
+    console.error(err);
+  }
+});
+
+function detenerGrabacion(){
+  if(grabadora && grabadora.state !== 'inactive') grabadora.stop();
+  grabadora?.stream.getTracks().forEach(t => t.stop());
+  grabando = false;
+  document.getElementById('btnGrabar').textContent = '🎤';
+  document.getElementById('btnGrabar').style.background = 'var(--vino)';
+}
+
+async function enviarADictado(){
+  document.getElementById('estadoGrabacion').textContent = 'Transcribiendo…';
+  const resultado = document.getElementById('resultadoDictado');
+  resultado.innerHTML = '';
+
+  const blob = new Blob(fragmentosAudio, { type: 'audio/webm' });
+  const reader = new FileReader();
+  reader.onloadend = async () => {
+    const base64 = reader.result.split(',')[1];
+    try{
+      const response = await fetch("https://escritores-hispanos-backend.onrender.com/api/transcribir", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ audio_base64: base64, mime_type: 'audio/webm' })
+      });
+      const data = await response.json();
+      if(!response.ok) throw new Error(data.error || 'Error desconocido');
+
+      document.getElementById('estadoGrabacion').textContent = 'Toca para grabar de nuevo';
+      resultado.innerHTML = `
+        <div class="herr-resultado" id="textoTranscrito" contenteditable="true" style="outline:none;">${data.texto.replace(/</g,'&lt;')}</div>
+        <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+          <button class="herr-btn" id="btnUsarEnChat">💬 Enviar al chat</button>
+          <button class="herr-btn" id="btnUsarEnManuscrito" style="background:var(--verde); color:#fff;">📖 Agregar como capítulo nuevo</button>
+        </div>
+      `;
+
+      document.getElementById('btnUsarEnChat').addEventListener('click', ()=>{
+        const texto = document.getElementById('textoTranscrito').innerText;
+        document.getElementById('modalDictado').style.display = 'none';
+        mostrarChat();
+        document.getElementById('chatInput').value = texto;
+        document.getElementById('chatSend').click();
+      });
+
+      document.getElementById('btnUsarEnManuscrito').addEventListener('click', async ()=>{
+        const texto = document.getElementById('textoTranscrito').innerText;
+        estadoProyecto.capitulos.push({ titulo: `Capítulo ${estadoProyecto.capitulos.length + 1}`, contenido: texto });
+        await guardarProyecto(estadoProyecto);
+        actualizarProgresoEscritor();
+        document.getElementById('modalDictado').style.display = 'none';
+        abrirManuscrito();
+      });
+    } catch(err){
+      document.getElementById('estadoGrabacion').textContent = 'Toca para grabar de nuevo';
+      resultado.innerHTML = `<div class="herr-resultado">No se pudo transcribir: ${err.message}</div>`;
+      console.error(err);
+    }
+  };
+  reader.readAsDataURL(blob);
+}
+
 function abrirAudiolibro(){
   renderAudiolibro();
   document.getElementById('modalAudiolibro').style.display = 'flex';
@@ -1586,6 +1757,46 @@ async function generarAudioCapitulo(indice){
     console.error(err);
   } finally {
     btn.disabled = false; btn.textContent = '🎧 Generar audio';
+  }
+}
+
+async function ilustrarCapitulo(indice){
+  const capitulo = estadoProyecto.capitulos[indice];
+  const resultado = document.getElementById(`ilustracionResultado-${indice}`);
+
+  if(estadoUso.plan === 'gratis'){
+    resultado.innerHTML = `<div class="herr-resultado" style="margin-top:8px;">Ilustrar capítulos es una función de los planes Pro y Premium. <a href="#" onclick="document.getElementById('modalMejorarPlan').style.display='flex'; return false;">Mejora tu plan →</a></div>`;
+    return;
+  }
+
+  resultado.innerHTML = `<div class="herr-resultado" style="margin-top:8px;">Generando ilustración… (~20s)</div>`;
+
+  const resumenCapitulo = (capitulo.contenido || '').slice(0, 600);
+  const prompt = `Ilustración de libro, sin texto ni letras en la imagen, estilo acorde al tono "${estadoProyecto.tono || 'narrativo'}" de un libro de tipo "${estadoProyecto.tipo || 'general'}". Escena basada en este fragmento: ${resumenCapitulo}`;
+
+  try{
+    const response = await fetch("https://escritores-hispanos-backend.onrender.com/api/imagen", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt, size: '1024x1024' })
+    });
+    const data = await response.json();
+    if(!response.ok) throw new Error(data.error?.error?.message || data.error || 'Error desconocido');
+
+    const b64 = data.data[0].b64_json;
+    resultado.innerHTML = `
+      <img src="data:image/png;base64,${b64}" style="width:100%; max-width:280px; border-radius:8px; border:1px solid var(--linea); margin-top:10px; display:block;">
+      <button class="copiar-btn" id="btnDescargarIlustracion-${indice}" style="margin-top:8px;">⬇️ Descargar imagen</button>
+    `;
+    document.getElementById(`btnDescargarIlustracion-${indice}`).addEventListener('click', ()=>{
+      const a = document.createElement('a');
+      a.href = `data:image/png;base64,${b64}`;
+      a.download = `ilustracion-${(capitulo.titulo||'capitulo').replace(/[^\w\-]+/g,'-')}.png`;
+      a.click();
+    });
+    registrarUso(0, 'ilustracion');
+  } catch(err){
+    resultado.innerHTML = `<div class="herr-resultado" style="margin-top:8px;">No se pudo generar: ${err.message}</div>`;
+    console.error(err);
   }
 }
 
