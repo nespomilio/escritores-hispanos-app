@@ -566,6 +566,7 @@
         <ul style="font-size:0.78rem; color:#5a665e; padding-left:18px; margin-bottom:16px; line-height:1.6;">
           <li>150.000 palabras de IA/mes</li>
           <li>Corrección, traducción, formateo</li>
+          <li>Mi Manuscrito y calculadoras</li>
           <li>Checklist de publicación KDP</li>
         </ul>
         <button class="herr-btn" style="width:100%;" data-price-plan="pro">Suscribirme</button>
@@ -575,8 +576,11 @@
         <div style="font-family:'Poppins',sans-serif; font-size:1.6rem; margin-bottom:10px;">€39<span style="font-size:0.8rem; font-weight:400;">/mes</span></div>
         <ul style="font-size:0.78rem; color:#5a665e; padding-left:18px; margin-bottom:16px; line-height:1.6;">
           <li>Palabras de IA ilimitadas</li>
-          <li>Generación de portadas con IA</li>
-          <li>Todo lo de Escritor Pro</li>
+          <li>Todo lo de Escritor Pro, más:</li>
+          <li>🎨 Portadas e ilustraciones con IA</li>
+          <li>🎧 Audiolibro (texto a voz)</li>
+          <li>🎤 Dictado por voz completo</li>
+          <li>📱 Imágenes para marketing</li>
         </ul>
         <button class="herr-btn" style="width:100%;" data-price-plan="premium">Suscribirme</button>
       </div>
@@ -748,7 +752,7 @@ let proyectoActualId = null;
 let usuarioActual = null;
 
 // ---- Planes y límites de uso mensual (palabras de IA) ----
-const LIMITES_PLAN = { gratis: 10000, pro: 150000, premium: Infinity };
+const LIMITES_PLAN = { gratis: 3000, pro: 150000, premium: Infinity };
 const NOMBRES_PLAN = { gratis: 'Gratis', pro: 'Escritor Pro', premium: 'Autor Premium' };
 let estadoUso = { plan: 'gratis', palabras_usadas_mes: 0 };
 
@@ -1312,8 +1316,8 @@ document.getElementById('btnGenerarPortada').addEventListener('click', async ()=
   const btn = document.getElementById('btnGenerarPortada');
   if(!descripcion){ alert('Describe la escena o imagen primero.'); return; }
 
-  if(estadoUso.plan === 'gratis'){
-    resultado.innerHTML = `<div class="herr-resultado">La generación de portadas con IA es una función de los planes Pro y Premium. <a href="#" onclick="document.getElementById('modalMejorarPlan').style.display='flex'; return false;">Mejora tu plan →</a></div>`;
+  if(estadoUso.plan !== 'premium'){
+    resultado.innerHTML = `<div class="herr-resultado">La generación de portadas con IA es una función exclusiva del plan Premium. <a href="#" onclick="document.getElementById('modalMejorarPlan').style.display='flex'; return false;">Mejora tu plan →</a></div>`;
     return;
   }
 
@@ -1495,8 +1499,8 @@ async function generarImagenMarketing(textoMarketing){
   const resultado = document.getElementById('imagenMarketingResultado');
   const btn = document.getElementById('btnImagenMarketing');
 
-  if(estadoUso.plan === 'gratis'){
-    resultado.innerHTML = `<div class="herr-resultado" style="margin-top:8px;">Las imágenes de marketing son una función de los planes Pro y Premium. <a href="#" onclick="document.getElementById('modalMejorarPlan').style.display='flex'; return false;">Mejora tu plan →</a></div>`;
+  if(estadoUso.plan !== 'premium'){
+    resultado.innerHTML = `<div class="herr-resultado" style="margin-top:8px;">Las imágenes de marketing son una función exclusiva del plan Premium. <a href="#" onclick="document.getElementById('modalMejorarPlan').style.display='flex'; return false;">Mejora tu plan →</a></div>`;
     return;
   }
 
@@ -1631,8 +1635,8 @@ document.getElementById('cerrarModalDictado').addEventListener('click', ()=>{
 document.getElementById('btnGrabar').addEventListener('click', async ()=>{
   if(grabando){ detenerGrabacion(); return; }
 
-  if(estadoUso.plan === 'gratis'){
-    document.getElementById('resultadoDictado').innerHTML = `<div class="herr-resultado">El dictado por voz es una función de los planes Pro y Premium. <a href="#" onclick="document.getElementById('modalMejorarPlan').style.display='flex'; return false;">Mejora tu plan →</a></div>`;
+  if(estadoUso.plan !== 'premium'){
+    document.getElementById('resultadoDictado').innerHTML = `<div class="herr-resultado">El dictado por voz es una función exclusiva del plan Premium. <a href="#" onclick="document.getElementById('modalMejorarPlan').style.display='flex'; return false;">Mejora tu plan →</a></div>`;
     return;
   }
 
@@ -1725,8 +1729,8 @@ async function generarAudioCapitulo(indice){
   const capitulo = estadoProyecto.capitulos[indice];
   const voz = document.getElementById('vozAudiolibro').value;
 
-  if(estadoUso.plan === 'gratis'){
-    resultado.innerHTML = `<div class="herr-resultado" style="margin-top:10px;">El audiolibro es una función de los planes Pro y Premium. <a href="#" onclick="document.getElementById('modalMejorarPlan').style.display='flex'; return false;">Mejora tu plan →</a></div>`;
+  if(estadoUso.plan !== 'premium'){
+    resultado.innerHTML = `<div class="herr-resultado" style="margin-top:10px;">El audiolibro es una función exclusiva del plan Premium. <a href="#" onclick="document.getElementById('modalMejorarPlan').style.display='flex'; return false;">Mejora tu plan →</a></div>`;
     return;
   }
 
@@ -1764,8 +1768,8 @@ async function ilustrarCapitulo(indice){
   const capitulo = estadoProyecto.capitulos[indice];
   const resultado = document.getElementById(`ilustracionResultado-${indice}`);
 
-  if(estadoUso.plan === 'gratis'){
-    resultado.innerHTML = `<div class="herr-resultado" style="margin-top:8px;">Ilustrar capítulos es una función de los planes Pro y Premium. <a href="#" onclick="document.getElementById('modalMejorarPlan').style.display='flex'; return false;">Mejora tu plan →</a></div>`;
+  if(estadoUso.plan !== 'premium'){
+    resultado.innerHTML = `<div class="herr-resultado" style="margin-top:8px;">Ilustrar capítulos es una función exclusiva del plan Premium. <a href="#" onclick="document.getElementById('modalMejorarPlan').style.display='flex'; return false;">Mejora tu plan →</a></div>`;
     return;
   }
 
