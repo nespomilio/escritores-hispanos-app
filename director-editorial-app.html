@@ -651,7 +651,8 @@
 <div class="modal-overlay" id="modalManuscrito" style="display:none;">
   <div class="modal-box modal-ancho" style="max-width:760px; max-height:82vh;">
     <h3>Mi Manuscrito</h3>
-    <p style="font-size:0.82rem; color:#5a665e; margin-bottom:14px;">Cada capítulo que el Director Editorial escribe contigo se guarda aquí automáticamente. Puedes editar el texto directo, y enviarlo a Maquetación cuando esté listo.</p>
+    <p style="font-size:0.82rem; color:#5a665e; margin-bottom:14px;">Cada capítulo que el Director Editorial escribe contigo se guarda aquí automáticamente. También puedes agregar o editar capítulos a mano — se sincronizan al instante con Audiolibro, Maquetación y Traducción. Dale a "Guardar cambios" para que quede permanente (si recargas la página sin guardar, se pierde).</p>
+    <button class="herr-btn" id="btnAgregarCapitulo" style="background:var(--papel-claro); color:var(--verde); border:1px solid var(--verde); margin-bottom:14px;">+ Agregar capítulo en blanco</button>
     <div id="listaCapitulos"></div>
     <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
       <button class="herr-btn" id="btnGuardarManuscrito">💾 Guardar cambios</button>
@@ -1460,6 +1461,19 @@ function renderManuscrito(){
       }
     });
   });
+
+  // Sincroniza en vivo con estadoProyecto mientras se escribe, para que
+  // Audiolibro / Maquetación / Traducción vean el cambio sin tener que guardar primero
+  lista.querySelectorAll('.capitulo-item').forEach(item=>{
+    const idx = parseInt(item.dataset.indice);
+    const inputTitulo = item.querySelector('.titulo-capitulo');
+    const inputContenido = item.querySelector('.contenido-capitulo');
+    inputTitulo.addEventListener('input', ()=>{ estadoProyecto.capitulos[idx].titulo = inputTitulo.value; });
+    inputContenido.addEventListener('input', ()=>{
+      estadoProyecto.capitulos[idx].contenido = inputContenido.value;
+      item.querySelector('.meta-capitulo span').textContent = contarPalabras(inputContenido.value) + ' palabras';
+    });
+  });
 }
 
 function renderAudiolibro(){
@@ -1542,6 +1556,15 @@ function abrirManuscrito(){
 }
 
 document.getElementById('cerrarModalManuscrito').addEventListener('click', ()=> document.getElementById('modalManuscrito').style.display = 'none');
+
+document.getElementById('btnAgregarCapitulo').addEventListener('click', ()=>{
+  estadoProyecto.capitulos.push({ titulo: `Capítulo ${estadoProyecto.capitulos.length + 1}`, contenido: '' });
+  renderManuscrito();
+  // Enfoca el nuevo capítulo agregado, al final de la lista
+  const items = document.querySelectorAll('#listaCapitulos .capitulo-item');
+  const ultimo = items[items.length - 1];
+  if(ultimo){ ultimo.scrollIntoView({ behavior:'smooth', block:'center' }); ultimo.querySelector('.contenido-capitulo').focus(); }
+});
 
 document.getElementById('btnGuardarManuscrito').addEventListener('click', async ()=>{
   const items = document.querySelectorAll('#listaCapitulos .capitulo-item');
