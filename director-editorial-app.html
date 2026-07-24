@@ -284,6 +284,7 @@
           </div>
           <div class="barra-fondo"><div class="barra" id="progresoMetaBarra" style="width:0%"></div></div>
         </div>
+        <div id="rachaTexto" style="display:none; margin-top:12px; font-size:0.85rem; font-weight:700; color:var(--vino);"></div>
       </div>
       <div class="grid-modulos">
         <div class="tarjeta-modulo" data-modulo="manuscrito" style="border-color:var(--oro);">
@@ -529,9 +530,10 @@
     </div>
     <button class="herr-btn" id="btnCalcularMargenes">Calcular márgenes</button>
     <div id="margenesResultado"></div>
-    <div id="formatoAcciones" style="display:none; margin-top:16px; gap:10px;">
+    <div id="formatoAcciones" style="display:none; margin-top:16px; gap:10px; flex-wrap:wrap;">
       <button class="herr-btn" id="btnVistaImpresion">🖨️ Vista previa e imprimir a PDF</button>
       <button class="herr-btn" id="btnDescargarWord" style="background:var(--oro); color:#241a0d;">⬇️ Descargar como Word (.docx)</button>
+      <button class="herr-btn" id="btnDescargarEpub" style="background:var(--verde); color:#fff;">📱 Descargar como EPUB (Kindle/ebook)</button>
     </div>
     <p class="herr-nota">El PDF (vista previa e imprimir) respeta el margen interior/exterior espejado real, página por página, tal como lo pide KDP. El Word usa el margen interior como margen izquierdo fijo en todas las páginas — funciona para revisar y editar, pero antes de subirlo a KDP, en Word activa <em>Diseño de página → Márgenes → Márgenes personalizados → "Páginas opuestas"</em> para que el espejado quede perfecto, o usa directamente el PDF generado aquí.</p>
     <p class="herr-nota" id="notaEpub">¿Necesitas EPUB para Kindle? Genera primero tu Word aquí, y conviértelo gratis con <a href="https://www.reedsy.com/write-a-book" target="_blank" style="color:var(--verde); font-weight:600;">Reedsy Book Editor</a> o <a href="https://calibre-ebook.com" target="_blank" style="color:var(--verde); font-weight:600;">Calibre</a> — el EPUB es un formato "líquido" (sin páginas fijas), por lo que no se beneficia de las medidas exactas que sí necesita el PDF/tapa blanda.</p>
@@ -640,6 +642,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script>
 /* =========================================================
    DIRECTOR EDITORIAL — conectado a IA real (no texto fijo)
@@ -805,6 +808,8 @@ sb.auth.onAuthStateChange((event, session)=>{
     appLayout.style.display = 'grid';
     cargarUso();
     revisarRegresoDePago();
+    sb.from('eh_perfiles').select('racha_actual').eq('id', usuarioActual.id).maybeSingle()
+      .then(({data}) => { if(data) mostrarRacha(data.racha_actual); });
     if(historial.length === 0) arrancarSesion();
   } else {
     usuarioActual = null;
@@ -1645,6 +1650,117 @@ document.getElementById('btnDescargarWord').addEventListener('click', async ()=>
   }
 });
 
+function agruparEnCapitulos(parrafos){
+  const capitulos = [];
+  let actual = { titulo: 'Inicio', parrafos: [] };
+  parrafos.forEach(p => {
+    if(p.esCapitulo){
+      if(actual.parrafos.length || capitulos.length) capitulos.push(actual);
+      actual = { titulo: p.texto, parrafos: [] };
+    } else {
+      actual.parrafos.push(p.texto);
+    }
+  });
+  capitulos.push(actual);
+  return capitulos.filter(c => c.parrafos.length || c !== capitulos[0]);
+}
+
+function escaparXml(texto){
+  return (texto || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+document.getElementById('btnDescargarEpub').addEventListener('click', async ()=>{
+  const parrafos = prepararParrafos();
+  if(!parrafos){ alert('Pega tu manuscrito arriba antes de descargar.'); return; }
+  const btn = document.getElementById('btnDescargarEpub');
+  btn.disabled = true; btn.textContent = 'Generando…';
+
+  try{
+    const capitulos = agruparEnCapitulos(parrafos);
+    const titulo = estadoProyecto.titulo || 'Mi manuscrito';
+    const autor = usuarioActual?.email || 'Autor';
+    const uuid = 'urn:uuid:' + crypto.randomUUID();
+
+    const zip = new JSZip();
+    zip.file('mimetype', 'application/epub+zip', { compression: 'STORE' });
+
+    zip.folder('META-INF').file('container.xml', `<?xml version="1.0" encoding="UTF-8"?>
+<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
+  <rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles>
+</container>`);
+
+    const oebps = zip.folder('OEBPS');
+
+    const manifiestoItems = capitulos.map((c,i) => `<item id="cap${i+1}" href="cap${i+1}.xhtml" media-type="application/xhtml+xml"/>`).join('\n    ');
+    const spineItems = capitulos.map((c,i) => `<itemref idref="cap${i+1}"/>`).join('\n    ');
+    const navItems = capitulos.map((c,i) => `<li><a href="cap${i+1}.xhtml">${escaparXml(c.titulo)}</a></li>`).join('\n        ');
+    const navPointsNcx = capitulos.map((c,i) => `<navPoint id="navPoint-${i+1}" playOrder="${i+1}"><navLabel><text>${escaparXml(c.titulo)}</text></navLabel><content src="cap${i+1}.xhtml"/></navPoint>`).join('\n    ');
+
+    oebps.file('content.opf', `<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bookid">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:identifier id="bookid">${uuid}</dc:identifier>
+    <dc:title>${escaparXml(titulo)}</dc:title>
+    <dc:language>es</dc:language>
+    <dc:creator>${escaparXml(autor)}</dc:creator>
+    <meta property="dcterms:modified">${new Date().toISOString().split('.')[0]}Z</meta>
+  </metadata>
+  <manifest>
+    <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
+    <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
+    ${manifiestoItems}
+  </manifest>
+  <spine toc="ncx">
+    ${spineItems}
+  </spine>
+</package>`);
+
+    oebps.file('nav.xhtml', `<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+<head><title>Índice</title></head>
+<body>
+  <nav epub:type="toc" id="toc"><h1>Índice</h1><ol>
+        ${navItems}
+  </ol></nav>
+</body>
+</html>`);
+
+    oebps.file('toc.ncx', `<?xml version="1.0" encoding="UTF-8"?>
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1">
+  <head><meta name="dtb:uid" content="${uuid}"/></head>
+  <docTitle><text>${escaparXml(titulo)}</text></docTitle>
+  <navMap>
+    ${navPointsNcx}
+  </navMap>
+</ncx>`);
+
+    capitulos.forEach((c, i) => {
+      const parrafosHtml = c.parrafos.map(p => `<p>${escaparXml(p)}</p>`).join('\n    ');
+      oebps.file(`cap${i+1}.xhtml`, `<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>${escaparXml(c.titulo)}</title></head>
+<body>
+  <h1>${escaparXml(c.titulo)}</h1>
+    ${parrafosHtml}
+</body>
+</html>`);
+    });
+
+    const blob = await zip.generateAsync({ type:'blob', mimeType:'application/epub+zip' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = (titulo.replace(/[^\w\-]+/g,'-') || 'manuscrito') + '.epub';
+    a.click();
+    URL.revokeObjectURL(url);
+    registrarUso(0, 'epub');
+  } catch(err){
+    alert('No se pudo generar el EPUB. Revisa la consola (F12) para más detalle.');
+    console.error(err);
+  } finally {
+    btn.disabled = false; btn.textContent = '📱 Descargar como EPUB (Kindle/ebook)';
+  }
+});
+
 document.getElementById('formatoRegalia').addEventListener('change', (e)=>{
   const esEbook = e.target.value === 'ebook';
   document.getElementById('campoTinta').style.display = esEbook ? 'none' : 'block';
@@ -1715,6 +1831,25 @@ function streamTexto(texto){
     chatScroll.scrollTop = chatScroll.scrollHeight;
     if(i >= texto.length){ clearInterval(iv); cursor.remove(); }
   }, 12);
+}
+
+async function registrarActividad(){
+  if(!usuarioActual) return;
+  const { data, error } = await sb.rpc('eh_registrar_actividad', { p_usuario: usuarioActual.id });
+  if(!error && data && data.length){
+    mostrarRacha(data[0].racha_actual);
+  }
+}
+
+function mostrarRacha(racha){
+  const el = document.getElementById('rachaTexto');
+  if(!el) return;
+  if(racha >= 2){
+    el.textContent = `🔥 ${racha} días seguidos escribiendo`;
+    el.style.display = 'block';
+  } else {
+    el.style.display = 'none';
+  }
 }
 
 const META_PALABRAS_LIBRO = 50000;
@@ -1800,6 +1935,7 @@ async function llamarIA(textoUsuario){
     guardarMensaje('assistant', limpio);
     guardarProyecto(estadoProyecto);
     registrarUso(contarPalabras(textoUsuario) + contarPalabras(parsed.respuesta), 'chat');
+    registrarActividad();
   } catch(err){
     removeTyping();
     const mensaje = (err.name === 'AbortError')
