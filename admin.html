@@ -36,6 +36,8 @@
   .tarjeta label{ font-size:0.7rem; text-transform:uppercase; letter-spacing:0.05em; color:#8a8478; font-weight:700; display:block; margin-bottom:8px; }
   .tarjeta .valor{ font-family:'Poppins',sans-serif; font-size:1.9rem; color:var(--ink); }
   .tarjeta .sub{ font-size:0.78rem; color:#8a8478; margin-top:4px; }
+  .tarjeta .valor.alerta{ color:var(--vino); }
+  .tarjeta .valor.positivo{ color:var(--verde); }
 
   .seccion{ background:var(--papel-claro); border:1px solid var(--linea); border-radius:12px; padding:24px; margin-bottom:24px; }
   .seccion h3{ font-family:'Poppins',sans-serif; font-size:1.05rem; margin-bottom:16px; }
@@ -51,6 +53,16 @@
   .fila-herr .barra-fondo{ flex:1; background:var(--papel); border-radius:20px; height:8px; overflow:hidden; }
   .fila-herr .barra{ background:var(--verde); height:100%; border-radius:20px; }
   .fila-herr .num{ width:44px; text-align:right; font-size:0.8rem; color:#5a665e; }
+
+  table{ width:100%; border-collapse:collapse; font-size:0.82rem; }
+  th{ text-align:left; padding:10px 8px; border-bottom:2px solid var(--linea); color:#8a8478; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.04em; }
+  td{ padding:10px 8px; border-bottom:1px solid var(--linea); }
+  tr:last-child td{ border-bottom:none; }
+  .badge{ display:inline-block; padding:2px 10px; border-radius:12px; font-size:0.72rem; font-weight:700; text-transform:capitalize; }
+  .badge.gratis{ background:#ede9f2; color:#5a665e; }
+  .badge.pro{ background:#fbeed3; color:#8a5a1a; }
+  .badge.premium{ background:#e0efe8; color:var(--verde); }
+  .tabla-scroll{ max-height:360px; overflow-y:auto; }
 
   .cargando{ text-align:center; padding:60px 0; color:#8a8478; }
 </style>
@@ -77,19 +89,26 @@
     <img src="logo-libroos.png" alt="LibroOS">
     <div>
       <h1>Panel de administrador</h1>
-      <p>Métricas agregadas — nunca contenido de usuarios</p>
+      <p>Métricas agregadas y detalle de usuarios registrados</p>
     </div>
   </header>
 
   <div class="cargando" id="cargando">Cargando estadísticas…</div>
 
   <div id="contenidoStats" style="display:none;">
+
     <div class="grid-tarjetas">
       <div class="tarjeta"><label>Usuarios totales</label><div class="valor" id="statTotalUsuarios">—</div></div>
       <div class="tarjeta"><label>Altas últimos 30 días</label><div class="valor" id="statAltas30">—</div></div>
       <div class="tarjeta"><label>Proyectos creados</label><div class="valor" id="statProyectos">—</div></div>
       <div class="tarjeta"><label>Suscripciones activas</label><div class="valor" id="statSuscripciones">—</div></div>
-      <div class="tarjeta"><label>Ingreso mensual estimado</label><div class="valor" id="statMRR">—</div><div class="sub">Basado en suscripciones activas en Stripe</div></div>
+      <div class="tarjeta"><label>Ingreso mensual estimado (MRR)</label><div class="valor" id="statMRR">—</div><div class="sub">Basado en suscripciones activas en Stripe</div></div>
+      <div class="tarjeta"><label>Ingreso acumulado histórico</label><div class="valor positivo" id="statIngresoAcumulado">—</div><div class="sub">Suma de facturas pagadas en Stripe</div></div>
+      <div class="tarjeta"><label>Tasa de conversión</label><div class="valor" id="statConversion">—</div><div class="sub" id="statConversionSub"></div></div>
+      <div class="tarjeta"><label>Cancelaciones (30 días)</label><div class="valor alerta" id="statChurn30">—</div><div class="sub" id="statChurnTotal"></div></div>
+      <div class="tarjeta"><label>Activos últimos 7 días</label><div class="valor" id="statActivos7">—</div></div>
+      <div class="tarjeta"><label>Activos últimos 30 días</label><div class="valor" id="statActivos30">—</div></div>
+      <div class="tarjeta"><label>Palabras generadas por IA</label><div class="valor" id="statPalabras">—</div><div class="sub">Total histórico</div></div>
     </div>
 
     <div class="seccion">
@@ -101,6 +120,19 @@
       <h3>Qué herramientas se usan más</h3>
       <div id="filasHerramientas"></div>
     </div>
+
+    <div class="seccion">
+      <h3>Usuarios registrados</h3>
+      <div class="tabla-scroll">
+        <table>
+          <thead>
+            <tr><th>Email</th><th>Plan</th><th>Alta</th><th>Última actividad</th></tr>
+          </thead>
+          <tbody id="filasUsuarios"></tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -120,6 +152,12 @@ const NOMBRES_HERRAMIENTA = {
   regalias: 'Precio y regalías',
   metadatos: 'Generador de metadatos KDP'
 };
+
+function formatearFecha(iso){
+  if(!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('es-ES', { day:'2-digit', month:'short', year:'numeric' });
+}
 
 document.getElementById('loginBtn').addEventListener('click', async ()=>{
   const email = document.getElementById('loginEmail').value.trim();
@@ -162,6 +200,18 @@ async function cargarEstadisticas(usuarioId){
     document.getElementById('statProyectos').textContent = data.total_proyectos;
     document.getElementById('statSuscripciones').textContent = data.stripe.suscripciones_activas;
     document.getElementById('statMRR').textContent = '€' + data.stripe.mrr_estimado.toFixed(2);
+    document.getElementById('statIngresoAcumulado').textContent = '€' + data.stripe.ingreso_acumulado.toFixed(2);
+
+    document.getElementById('statConversion').textContent = data.funnel.tasa_conversion.toFixed(1) + '%';
+    document.getElementById('statConversionSub').textContent = data.funnel.usuarios_de_pago + ' de ' + data.funnel.total + ' usuarios pagan';
+
+    document.getElementById('statChurn30').textContent = data.stripe.canceladas_ultimos_30_dias;
+    document.getElementById('statChurnTotal').textContent = data.stripe.canceladas_total + ' canceladas en total';
+
+    document.getElementById('statActivos7').textContent = data.retencion.activos_7_dias;
+    document.getElementById('statActivos30').textContent = data.retencion.activos_30_dias;
+
+    document.getElementById('statPalabras').textContent = data.palabras_generadas_total.toLocaleString('es-ES');
 
     const maxPlan = Math.max(1, ...Object.values(data.usuarios_por_plan));
     document.getElementById('filasPlanes').innerHTML = Object.entries(data.usuarios_por_plan).map(([plan, n])=>`
@@ -181,6 +231,16 @@ async function cargarEstadisticas(usuarioId){
         <div class="num">${n}</div>
       </div>
     `).join('') : '<p style="font-size:0.85rem; color:#8a8478;">Todavía no hay uso registrado.</p>';
+
+    const usuarios = data.lista_usuarios || [];
+    document.getElementById('filasUsuarios').innerHTML = usuarios.length ? usuarios.map(u => `
+      <tr>
+        <td>${u.email}</td>
+        <td><span class="badge ${u.plan}">${u.plan}</span></td>
+        <td>${formatearFecha(u.alta)}</td>
+        <td>${formatearFecha(u.ultima_actividad)}</td>
+      </tr>
+    `).join('') : '<tr><td colspan="4" style="color:#8a8478;">Sin usuarios todavía.</td></tr>';
 
   } catch(err){
     document.getElementById('cargando').textContent = 'No se pudo cargar: ' + err.message;
