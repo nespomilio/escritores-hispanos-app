@@ -142,6 +142,16 @@ const SUPABASE_URL = 'https://iyhdldixxpxzhudcswty.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_2cegjLXWyigJF4CDW_4lhA_3UyHbsZ7';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+const API_BASE = 'https://escritores-hispanos-backend.onrender.com';
+const _fetchOriginal = window.fetch.bind(window);
+window.fetch = async (url, opciones = {}) => {
+  if(typeof url === 'string' && url.startsWith(API_BASE)){
+    const { data: { session } } = await sb.auth.getSession();
+    if(session){ opciones = { ...opciones, headers: { ...(opciones.headers || {}), 'Authorization': 'Bearer ' + session.access_token } }; }
+  }
+  return _fetchOriginal(url, opciones);
+};
+
 const NOMBRES_HERRAMIENTA = {
   chat: 'Conversación con Director Editorial',
   correccion: 'Editor inteligente (gramática)',

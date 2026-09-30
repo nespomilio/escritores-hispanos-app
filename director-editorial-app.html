@@ -269,11 +269,6 @@
       <div class="uso-plan"><b id="usoPlanNombre">Gratis</b><a href="#" id="btnAbrirMejorarPlan">Mejorar plan →</a></div>
       <div class="uso-bar"><div class="uso-fill" id="usoFill" style="width:0%"></div></div>
       <div class="uso-txt" id="usoTexto">0 / 10.000 palabras este mes</div>
-      <select id="selectorPlanPrueba" class="u" style="width:100%; margin-top:10px; font-size:0.72rem; padding:6px; border-radius:4px; border:1px solid #3a4a42; background:var(--ink); color:#c9d3cb; font-family:'Inter',sans-serif;">
-        <option value="gratis">🧪 Probar como: Gratis</option>
-        <option value="pro">🧪 Probar como: Escritor Pro</option>
-        <option value="premium">🧪 Probar como: Autor Premium</option>
-      </select>
     </div>
     <div class="sidebar-foot">LibroOS<br>by Escritores Hispanos</div>
   </div>
@@ -558,7 +553,7 @@
 <div class="modal-overlay" id="modalMejorarPlan" style="display:none;">
   <div class="modal-box modal-ancho">
     <h3>Mejora tu plan</h3>
-    <p style="font-size:0.82rem; color:#5a665e; margin-bottom:18px;">Pago seguro procesado por Stripe. Puedes cancelar cuando quieras desde el correo de confirmación que recibas.</p>
+    <p style="font-size:0.82rem; color:#5a665e; margin-bottom:18px;">Los primeros 7 días son gratis. Pago seguro procesado por Stripe. Puedes cancelar cuando quieras desde el correo de confirmación que recibas.</p>
     <div class="herr-grid" style="grid-template-columns:1fr 1fr;">
       <div style="border:1px solid var(--linea); border-radius:8px; padding:20px;">
         <div style="font-weight:700; font-size:1.05rem; margin-bottom:4px;">Escritor Pro</div>
@@ -793,24 +788,18 @@ async function cargarUso(){
   // Si viene de la landing con un plan elegido (ej. director-editorial-app.html?plan=pro),
   // lo aplicamos una sola vez. En producción, esto pasaría por el checkout de Stripe primero;
   // aquí lo aplicamos directo para poder probar el flujo completo sin pagos aún.
-  const planUrl = new URLSearchParams(window.location.search).get('plan');
-  if(planUrl && ['gratis','pro','premium'].includes(planUrl) && planUrl !== estadoUso.plan){
-    estadoUso.plan = planUrl;
-    await sb.from('eh_perfiles').update({ plan: planUrl }).eq('id', usuarioActual.id);
+  // Si viene de la landing eligiendo Pro o Premium, abrimos la ventana de pago.
+  // El plan solo cambia después de pasar por Stripe (lo confirma el servidor).
+  const params = new URLSearchParams(window.location.search);
+  const planUrl = params.get('plan');
+  const nivel = { gratis:0, pro:1, premium:2 };
+  if(planUrl && (planUrl === 'pro' || planUrl === 'premium') && nivel[planUrl] > (nivel[estadoUso.plan] || 0)){
+    document.getElementById('modalMejorarPlan').style.display = 'flex';
   }
+  if(planUrl){ params.delete('plan'); const q = params.toString(); window.history.replaceState({}, '', window.location.pathname + (q ? '?' + q : '')); }
 
-  document.getElementById('selectorPlanPrueba').value = estadoUso.plan;
   actualizarBarraUso();
 }
-
-document.getElementById('selectorPlanPrueba').addEventListener('change', async (e)=>{
-  const nuevoPlan = e.target.value;
-  estadoUso.plan = nuevoPlan;
-  actualizarBarraUso();
-  if(usuarioActual){
-    await sb.from('eh_perfiles').update({ plan: nuevoPlan }).eq('id', usuarioActual.id);
-  }
-});
 
 async function registrarUso(palabras, herramienta){
   estadoUso.palabras_usadas_mes = (estadoUso.palabras_usadas_mes || 0) + palabras;
@@ -837,6 +826,17 @@ function limiteAlcanzado(){
 const SUPABASE_URL = 'https://iyhdldixxpxzhudcswty.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_2cegjLXWyigJF4CDW_4lhA_3UyHbsZ7';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Cada llamada al backend lleva la sesión del usuario, para que el servidor sepa quién es y qué plan tiene.
+const API_BASE = 'https://escritores-hispanos-backend.onrender.com';
+const _fetchOriginal = window.fetch.bind(window);
+window.fetch = async (url, opciones = {}) => {
+  if(typeof url === 'string' && url.startsWith(API_BASE)){
+    const { data: { session } } = await sb.auth.getSession();
+    if(session){ opciones = { ...opciones, headers: { ...(opciones.headers || {}), 'Authorization': 'Bearer ' + session.access_token } }; }
+  }
+  return _fetchOriginal(url, opciones);
+};
 
 const loginOverlay = document.getElementById('loginOverlay');
 const appLayout = document.getElementById('appLayout');
