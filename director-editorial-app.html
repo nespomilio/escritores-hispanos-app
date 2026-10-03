@@ -240,6 +240,7 @@
     <img src="logo-libroos.png" alt="LibroOS" style="width:88px; height:88px; margin:0 auto 10px; display:block;">
     <div style="font-family:'Poppins',sans-serif; font-weight:700; font-size:1.1rem; color:var(--ink); margin-bottom:4px;">LibroOS</div>
     <div style="font-size:0.78rem; color:var(--oro); font-weight:600; margin-bottom:18px;">El sistema operativo para escritores, autores y editoriales</div>
+    <div id="loginIdea" style="display:none; background:#f6efe0; border-left:4px solid var(--oro); border-radius:4px 8px 8px 4px; padding:10px 12px; font-size:0.85rem; text-align:left; margin-bottom:14px;">✅ Tu idea está guardada. Escribe tu correo y pulsa el botón: al entrar desde el enlace, tu libro estará listo.</div>
     <p>Inicia sesión con tu correo. Te enviamos un enlace, sin contraseña.</p>
     <input type="email" id="loginEmail" placeholder="tu@correo.com">
     <button id="loginBtn">Enviar enlace mágico</button>
@@ -267,6 +268,7 @@
     <div class="nav-item" id="navKdp"><span class="nav-icon">↗</span> Publicar en KDP</div>
     <div class="uso-box" id="usoBox">
       <div class="uso-plan"><b id="usoPlanNombre">Gratis</b><a href="#" id="btnAbrirMejorarPlan">Mejorar plan →</a></div>
+      <a href="#" id="btnGestionarSuscripcion" style="display:none; font-size:0.72rem; color:#c9d3cb; text-decoration:underline; margin:2px 0 6px;">Gestionar o cancelar suscripción</a>
       <div class="uso-bar"><div class="uso-fill" id="usoFill" style="width:0%"></div></div>
       <div class="uso-txt" id="usoTexto">0 / 10.000 palabras este mes</div>
     </div>
@@ -553,7 +555,7 @@
 <div class="modal-overlay" id="modalMejorarPlan" style="display:none;">
   <div class="modal-box modal-ancho">
     <h3>Mejora tu plan</h3>
-    <p style="font-size:0.82rem; color:#5a665e; margin-bottom:18px;">Los primeros 7 días son gratis. Pago seguro procesado por Stripe. Puedes cancelar cuando quieras desde el correo de confirmación que recibas.</p>
+    <p style="font-size:0.82rem; color:#5a665e; margin-bottom:18px;">Los primeros 7 días son gratis. Pago seguro procesado por Stripe. Puedes cancelar cuando quieras desde «Gestionar o cancelar suscripción», en la barra lateral.</p>
     <div class="herr-grid" style="grid-template-columns:1fr 1fr;">
       <div style="border:1px solid var(--linea); border-radius:8px; padding:20px;">
         <div style="font-weight:700; font-size:1.05rem; margin-bottom:4px;">Escritor Pro</div>
@@ -760,6 +762,7 @@ function actualizarBarraUso(){
   const usadas = estadoUso.palabras_usadas_mes || 0;
   const pct = limite === Infinity ? 8 : Math.min(100, Math.round((usadas / limite) * 100));
   document.getElementById('usoPlanNombre').textContent = NOMBRES_PLAN[estadoUso.plan] || 'Gratis';
+  document.getElementById('btnGestionarSuscripcion').style.display = (estadoUso.plan && estadoUso.plan !== 'gratis') ? 'block' : 'none';
   document.getElementById('usoFill').style.width = pct + '%';
   document.getElementById('usoFill').classList.toggle('limite', pct >= 90);
   document.getElementById('usoTexto').textContent = limite === Infinity
@@ -871,7 +874,43 @@ sb.auth.onAuthStateChange((event, session)=>{
   }
 });
 
+// ---- Idea que llega desde la página de inicio ----
+const GENERO_DESDE_INICIO = { memorias:0, novela:1, noficcion:2, infantil:3, poesia:4, explorar:5 };
+const ETAPA_DESDE_INICIO = { idea:'tengo una idea', empezado:'ya empecé a escribir', terminado:'tengo el manuscrito terminado' };
+function leerIdeaPendiente(){
+  const p = new URLSearchParams(window.location.search);
+  if(p.get('empezar') === '1' && p.get('idea')){
+    return { etapa:p.get('etapa'), genero:p.get('genero'), idea:p.get('idea').slice(0,600) };
+  }
+  try{
+    const g = JSON.parse(localStorage.getItem('libroos_idea_pendiente') || 'null');
+    if(g && g.idea && Date.now() - (g.t || 0) < 7*24*3600*1000) return g;
+  }catch(e){}
+  return null;
+}
+function limpiarIdeaPendiente(){
+  try{ localStorage.removeItem('libroos_idea_pendiente'); }catch(e){}
+  const p = new URLSearchParams(window.location.search);
+  ['empezar','etapa','genero','idea'].forEach(k=>p.delete(k));
+  const q = p.toString();
+  window.history.replaceState({}, '', window.location.pathname + (q ? '?' + q : '') + window.location.hash);
+}
+if(leerIdeaPendiente()) document.getElementById('loginIdea').style.display = 'block';
+
+let sesionArrancada = false;
 async function arrancarSesion(){
+  if(sesionArrancada) return;
+  sesionArrancada = true;
+  const pendiente = leerIdeaPendiente();
+  if(pendiente){
+    limpiarIdeaPendiente();
+    const genero = GENEROS[GENERO_DESDE_INICIO[pendiente.genero] ?? 5];
+    await crearProyectoConGenero(genero);
+    const etapa = ETAPA_DESDE_INICIO[pendiente.etapa];
+    input.value = pendiente.idea + (etapa ? ` (Punto de partida: ${etapa}.)` : '');
+    enviar();
+    return;
+  }
   // Busca si el usuario ya tiene proyectos; si tiene, abre el más reciente. Si no, crea uno.
   const { data: proyectos } = await sb.from('eh_proyectos').select('*').order('updated_at', { ascending:false }).limit(1);
   if(proyectos && proyectos.length){
@@ -1856,6 +1895,25 @@ document.getElementById('btnAbrirMejorarPlan').addEventListener('click', (e)=>{
   document.getElementById('modalMejorarPlan').style.display = 'flex';
 });
 document.getElementById('cerrarModalMejorarPlan').addEventListener('click', ()=> document.getElementById('modalMejorarPlan').style.display = 'none');
+
+// Portal de Stripe: cancelar, cambiar de plan o actualizar la tarjeta
+document.getElementById('btnGestionarSuscripcion').addEventListener('click', async (e)=>{
+  e.preventDefault();
+  const enlace = e.currentTarget;
+  enlace.textContent = 'Abriendo…';
+  try{
+    const r = await fetch('https://escritores-hispanos-backend.onrender.com/api/portal-cliente', {
+      method:'POST', headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ returnUrl: window.location.origin + window.location.pathname })
+    });
+    const data = await r.json();
+    if(!r.ok || !data.url) throw new Error(data.error || 'No se pudo abrir.');
+    window.location.href = data.url;
+  } catch(err){
+    alert('No se pudo abrir la gestión de la suscripción: ' + err.message);
+    enlace.textContent = 'Gestionar o cancelar suscripción';
+  }
+});
 
 document.querySelectorAll('[data-price-plan]').forEach(btn=>{
   btn.addEventListener('click', async ()=>{
